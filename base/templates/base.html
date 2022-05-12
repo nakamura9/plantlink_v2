@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block _title %}{% endblock %}</title>
+        <meta name="charset" content="utf-8" >
+        <meta name="viewport" content="width=device-width, initial-scale=1" >
+        <style>{% block _head_style %}{% endblock %}</style>
+        <link rel="stylesheet" href="{% static 'base/css/bootstrap/bootstrap.min.css' %}" >
+        <link rel="stylesheet" href="{% static 'base/css/style.css' %}" >
+        <link rel="stylesheet" href="{% static 'base/js/jquery-ui-1.13.1.custom/jquery-ui.theme.css' %}">
+        <link rel="stylesheet" href="{% static 'base/js/jquery-ui-1.13.1.custom/jquery-ui.structure.css' %}">
+        <link rel="stylesheet" href="{% static 'base/fontawesome/css/all.min.css' %}">
+        <script src="{% static 'base/js/jquery-3.6.0.min.js' %}" ></script>
+        <script src="{% static 'base/js/bootstrap/bootstrap.min.js' %}" ></script>
+        <script src="{% static 'base/js/jquery-ui-1.13.1.custom/jquery-ui.js' %}"></script>
+        <script src="{% static 'base/fontawesome/js/all.min.js' %}"></script>
+    </head>
+    <body >
+        {%block _content %}
+        {% endblock %}
+        
+        <script>
+            $(document).ready(function() {
+                $(".dateinput").datepicker({
+                    changeYear: true,
+                    changeMonth: true,
+                    dateFormat: 'yy-mm-dd',
+                    minDate: new Date(1955, 1,1),
+                    yearRange: "1955:2035"
+                    });
+            })
+
+        </script>
+        <script>{%block _body_script %}{% endblock %}</script>
+        <script src="{% static 'base/js/index.js' %}" ></script>
+    </body>
+</html>        

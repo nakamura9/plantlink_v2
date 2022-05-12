@@ -1,0 +1,21 @@
+{
+  "status": "done",
+  "assets": {
+    "calendar.js": {
+      "name": "calendar.js",
+      "path": "C:\\Users\\nakamura9a\\documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\calendar.js"
+    },
+    "ui.js": {
+      "name": "ui.js",
+      "path": "C:\\Users\\nakamura9a\\documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\ui.js"
+    }
+  },
+  "chunks": {
+    "calendar": [
+      "calendar.js"
+    ],
+    "ui": [
+      "ui.js"
+    ]
+  }
+}

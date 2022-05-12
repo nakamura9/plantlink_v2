@@ -1,0 +1,64 @@
+{% extends 'window.html' %}
+{% load base %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3 mb-3">
+        <div class="col-12">
+            <h3>{{meta.verbose_name}} List</h3>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Filters</h4>
+                    <form action="" method="get">
+                        {% crispy filters.form %}
+                        
+                    </form>
+                    <script>
+                        $("form").append(`<button class="btn btn-default pull-right" type="submit">Filter</button>`)
+
+                    </script>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <div class="flex flex-end">
+                <div class="btn-group">
+                    <a class="btn btn-primary" href="{{create}}"><i class="fa fa-plus" aria-hidden="true"></i> Create New</a>
+                </div>
+            </div>
+            <br>
+            {% include 'base/pagination.html' %}
+            <div class="card">
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                {% for name in model.list_fields %}
+                                    <th>{{name | title}}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in object_list %}
+                            <tr>
+                                <td><a href="{{item|get_detail}}">{{item}}</a></td>
+                                {% for name in model.list_fields %}
+                                    <td>{{item | getattribute:name}}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

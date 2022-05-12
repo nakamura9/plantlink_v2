@@ -1,0 +1,40 @@
+.container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0,0,0, 0.3); 
+    z-index: 10000;
+}
+
+.form {
+    background-color: white;
+    margin: 10% auto;
+    width: 30%;
+    min-width: 300px;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+}
+
+.header h4 {
+    flex: 1
+} 
+
+.header button {
+    width: 50px;
+}
+
+.fieldbox {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    padding: 0.25rem;
+}

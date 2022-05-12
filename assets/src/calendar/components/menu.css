@@ -1,0 +1,20 @@
+.menu_container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 5px;
+}
+
+
+.menu_root {
+    padding: 1rem;
+}
+
+.right_aligned {
+    display: flex;
+}
+
+.right_aligned a {
+    margin-right: 1rem;
+}

@@ -1,0 +1,23 @@
+{% extends 'window.html' %}
+{% load crispy_forms_tags %}
+{% load render_bundle from webpack_loader %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow bg-white mb-3 mt-3">
+                <div class="card-body">
+                    <h3>Create {{model}}</h3>
+                    <hr>
+                    {% crispy form %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% render_bundle "ui" %}
+{% endblock %}

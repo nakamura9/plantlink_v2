@@ -1,0 +1,19 @@
+<h1>Import Inventory</h1>
+<hr>
+
+<div class="card shadow" style="max-width: 300px;">
+    <div class="card-body" >
+        {{form.errors}}
+        <form action="/import/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input name="file" type="file" class="form-control"/>
+            <select name="type" id=""  class="form-control">
+                <option value=""></option>
+                <option value="machines">Machines</option>
+                <option value="spares">Spares</option>
+            </select>
+            <button class="btn btn-primary">Import</button>
+        </form>
+
+    </div>
+</div>

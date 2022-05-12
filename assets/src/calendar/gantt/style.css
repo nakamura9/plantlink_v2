@@ -1,0 +1,109 @@
+.monthHeader {
+    text-align: center;
+    color: white;
+    background-color: steelblue;
+    padding: 0.3rem;
+    border-left: 2px solid white;
+    overflow-x: hidden;
+    font-size: 2rem;
+}
+
+.monthHeader h4 {
+    white-space: nowrap;
+}
+
+.monthContainer {
+    display: flex
+}
+
+.ganttTableCell {
+    border: 1px solid #eee;
+    text-align: center;
+    padding: 0px;
+    height: 100%;
+}
+
+.ganttTableRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.ganttTable {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.months {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+}
+
+.taskList {
+    width: 250px;
+}
+
+.taskCard, .taskBar {
+    padding: 6px;
+    margin-bottom: 12px;
+    color: white;
+    overflow-x: hidden;
+    white-space: nowrap;
+    border-radius: 5px;
+}
+
+.taskBar {
+    position: relative;
+    height: 36px
+}
+
+
+.taskBarChart {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.scroll_left,
+.scroll_right {
+    position: fixed;
+    height: 100%;
+    width: 50px;
+    top: 0px;
+    background-color: transparent;
+    z-index: 10000;
+}
+
+.scroll_left:hover,
+.scroll_right:hover {
+    background-color: rgba(240, 240, 240, 0.3);
+}
+
+.scroll_right {
+    position: fixed;
+    right: 0px;
+}
+
+.scroll_left {
+    left: 0px;
+}
+
+.overlay {
+    
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}

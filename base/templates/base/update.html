@@ -1,0 +1,39 @@
+{% extends 'window.html' %}
+{% load crispy_forms_tags %}
+{% load render_bundle from webpack_loader %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <div>
+                <div class="btn-group">
+                    <a class="btn btn-secondary" href="{{list}}"> <i class="fa fa-list-ul" aria-hidden="true"></i> List</a>
+                    <a class="btn btn-primary" href="{{create}}"> <i class="fa fa-plus" aria-hidden="true"></i> Create New</a>
+                </div>
+            </div>
+            {% if dashboard %}
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h4 class="text-muted">Dashboard</h4>
+                        {% include dashboard %}
+                    </div>
+                </div>
+                <br>
+            {% endif %}
+            
+            <div class="card shadow mb-3">
+                <div class="card-body">
+                    <h3>Update {{object}}</h3>
+                    <hr>
+                    {% crispy form %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% render_bundle "ui" %}
+
+{% endblock %}

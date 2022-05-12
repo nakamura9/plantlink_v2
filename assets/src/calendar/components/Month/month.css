@@ -1,0 +1,7 @@
+.header {
+    border-collapse: collapse;
+    border: 1px solid #aaa;
+    color: white;
+    font-size: 1rem;
+    height: 2rem;
+}

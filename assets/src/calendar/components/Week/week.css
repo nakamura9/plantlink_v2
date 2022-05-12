@@ -1,0 +1,86 @@
+.cellStyle {
+    border-collapse: collapse;
+    border:1px solid #ccc;
+    padding: 0px;
+}
+
+.headStyle {
+    border-collapse: collapse;
+    border:1px solid #ccc;
+    color: white;
+    padding: 0.5rem;   
+}
+.cellStyle {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+.dayWrapper {
+    max-height: 500px;
+    overflow-y: auto
+}
+
+.weekHeader {
+    color: white;
+    margin: 0px;
+    width: 80vw;
+    padding:0.5rem;
+}
+
+.weekContainer {
+    width: 100%;
+    margin: 0px;
+    position: relative;
+}
+
+.interval {
+    height: 32px;
+    margin: 0px;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    margin-left: 5px
+}
+
+.interval > span {
+    width: 70px;
+    display: block;
+    height: 100%;
+    padding-left: 5px;
+    position: relative;
+    z-index: 10000;
+}
+
+.underLay {
+    z-index: 1;
+}
+
+.overLay {
+    z-index: 100;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    display: flex;
+}
+
+.days {
+    display: flex;
+    margin-left: 5px;
+    height: 40px;
+    color: white
+}
+
+.days > div {
+    border-right: 1px solid white;
+    font-size: 1rem;
+    padding-top: 8px;
+    padding-left: 8px;
+    font-weight: 500
+}
+
+@media(max-width: 575px){
+    .weekHeader {
+        width: 100vw;
+    }
+
+
+}

@@ -1,0 +1,3 @@
+*.sqlite3
+assets/node_modules/
+*.pyc

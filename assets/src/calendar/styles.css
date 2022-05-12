@@ -1,0 +1,19 @@
+.window {
+    width: 100vw;
+    height: 100vh;
+}
+
+.sidebar {
+    height: 100vh;
+}
+
+.calendar {
+    display: 'flex';
+    flex-direction: 'row'
+}
+
+@media(max-width: 720px){
+    .calendar{
+        flex-direction: column;
+    }
+}

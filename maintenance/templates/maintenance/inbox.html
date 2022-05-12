@@ -1,0 +1,68 @@
+{% extends 'window.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Inbox</h1>
+            <hr>
+            <h5><i class="fa fa-user-circle fa-2x" aria-hidden="true"></i> {{request.user}}</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4> <i class="fa fa-clock" aria-hidden="true"></i> Breakdowns</h4>
+                    {% for b in breakdowns %}
+                        <br>
+                        <h5>
+                            <a href="/update/maintenance/workorder/{{b.pk}}/">{{b.machine}}</a>
+                        </h5>
+                        
+                        <h6>{{b.execution_date}} | {{b.status}}</h6>
+                        <p>{{b.description}}</p>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4><i class="fa fa-calendar" aria-hidden="true"></i> Planned Maintenance</h4>    
+                    {% for pt in preventative_tasks %}
+                        <br>
+                        <h5>
+                            <a href="/update/maintenance/preventativetask/{{pt.pk}}/">{{pt.machine}}</a>
+                        </h5>
+                        
+                        <h6>{{pt.scheduled_for}} | {{pt.estimated_downtime}}</h6>
+                        <p>{{pt.description}}</p>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4><i class="fa fa-check" aria-hidden="true"></i> Checklists</h4>
+                    {% for c in checklists %}
+                        <br>
+                        <h5>
+                            <a href="/update/maintenance/checklist/{{c.pk}}/">{{c.title}}</a>
+                        </h5>
+                        
+                        <h6>{{c.machine}} | {{c.frequency}}</h6>
+                        <p>{{c.estimated_time}}</p>
+                        <hr>
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

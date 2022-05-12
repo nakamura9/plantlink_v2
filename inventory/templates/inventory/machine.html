@@ -1,0 +1,91 @@
+{% load render_bundle from webpack_loader  %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-3">
+            <h5>Machine Composition</h5>
+            <p><b>Sections:</b> {{object.section_set.all.count}}</p>
+            <p><b>Sub Units:</b> {{object.subunit_set.all.count}}</p>
+            <p><b>Sub Assemblies:</b> {{object.subassembly_set.all.count}}</p>
+            <p><b>Components:</b> {{object.component_set.all.count}}</p>
+            <h5>Break Down Summary</h5>
+            <p><b>Today:</b> {{object.n_breakdowns_today}}</p>
+            <p><b>This Week:</b> {{object.n_breakdowns_weekly}}</p>
+            <p><b>This Month:</b> {{object.n_breakdowns_monthly}}</p>
+            <p><b>Last 6 Months:</b> {{object.n_breakdowns_sixmonths}}</p>
+
+            <h5>Child Elements</h5>
+            <div id="tree" data-url="{{children_url}}"></div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <h5>Maintenance Record</h5>
+            <h6>Breakdowns</h6>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Resolver</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in object.workorder_set.all %}
+                        <tr>
+                            <td>{{b.execution_date}}</td>
+                            <td>{{b.assigned_to}}</td>
+                            <td>{{b.description | truncatechars:50}}</td>
+                            <td>{{b.status}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h6>Planned Maintenance</h6>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Resolver</th>
+                        <th>Estimated Time</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pm in object.preventativetask_set.all %}
+                        <tr>
+                            <td>{{pm.scheduled_for}}</td>
+                            <td>{% for a in pm.assignments.all %} {{a}}, {% endfor %}</td>
+                            <td>{{pm.estimated_downtime}}</td>
+                            <td>{{pm.frequency}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+            <h5>Run History</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Start Date</th>
+                        <th>Run Hours(per day)</th>
+                        <th>Run Hours (per week)</th>
+                        <th>Total Run Hours for Period</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rd in object.run_data.all %}
+                        <tr>
+                            <td>{{rd.start_date}}</td>
+                            <td>{{rd.run_hours}}</td>
+                            <td>{{rd.weekly_run_hours}}</td>
+                            <td>{{rd.total_run_hours}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% render_bundle "ui" %}

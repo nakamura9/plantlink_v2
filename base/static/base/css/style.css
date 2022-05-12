@@ -1,0 +1,25 @@
+:root {
+    --primary: #009442;
+    --secondary: #009688;
+}
+
+
+body {
+    background-color: #eeeeee;
+}
+
+.form-control {
+    margin-bottom: 0.5rem;
+}
+
+article {
+    min-height: 90vh;
+}
+
+.fit-content {
+    width: fit-content;
+}
+
+textarea {
+    height: 6rem;
+}
