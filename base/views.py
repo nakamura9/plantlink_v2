@@ -213,5 +213,3 @@ def get_child_table_content(request, app=None, model=None, parent_id=None):
     return JsonResponse({'data': data})
 
 
-class ReportsView(TemplateView):
-    template_name = os.path.join('base', 'reports.html')

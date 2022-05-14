@@ -8,6 +8,13 @@ class Report(models.Model):
     name = models.CharField(max_length=255)
     form = models.CharField(max_length=512)
 
+    def __str__(self):
+        return self.name
+
+    @property
+    def url(self):
+        return f"/report/{self.name}"
+
     @property 
     def filename(self):
         return self.name.lower().replace(' ', '_')
@@ -19,6 +26,10 @@ class Report(models.Model):
     @property
     def render_func(self):
         return locate('reports.scripts.' + self.filename + '.render')
+
+    @property
+    def get_form_class(self):
+        return locate(self.form)
 
     def save(self,*args, **kwargs):
         if self.pk:

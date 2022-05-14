@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('planning.urls')),
     path('', include('inventory.urls')),
     path('', include('maintenance.urls')),
+    path('', include('reports.urls')),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', logout, name='logout')
 ]

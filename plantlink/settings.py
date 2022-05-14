@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'crispy_forms',
+    'wkhtmltopdf',
     'base',
     'inventory',
     'maintenance',
@@ -133,6 +134,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'assets', 'bundles'),
 )
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'base', 'static')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -149,3 +152,12 @@ WEBPACK_LOADER = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
+    'disable-smart-shrinking': True,
+    'enable-local-file-access': True
+}
+
+WKHTMLTOPDF_DEBUG = False

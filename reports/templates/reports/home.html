@@ -9,8 +9,8 @@
                 <div class="card-body">
                     <h4>Reports</h4>
                     <ul class="list-group">
-                        {% for link in links %}
-                        <li class="list-group-item"><a href="{{link.url}}">{{link.name}}</a></li>
+                        {% for report in reports %}
+                        <li class="list-group-item"><a href="{{report.url}}">{{report}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

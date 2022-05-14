@@ -1,0 +1,102 @@
+
+    <h2>Maintenance Report</h2>
+    <h4><b><u>Report Summary</u></b></h4>
+    <ul class="well">
+        <li>The report covers the period from <b>{{start_date}}</b> to <b>{{end_date}}</b></li>
+        {% if object.machine.count != 0 %}
+        <li>The equipment covered in this report consists of <b>{{machines}}</b></li>
+        {% else %}
+        <li>The scope of this report is all machines</li>
+        {% endif %}
+        <li>Over this period, there were {{wos.all.count}} breakdowns resulting in {{total_downtime}} hours of downtime </li>
+    </ul>
+    
+    <h3><u><b>Planned maintenance over the period</b></u></h3>
+    <h4><b>Preventative Tasks</b></h4>
+    
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Machine</th>
+                <th>Planned Hours</th>
+                <th>Actual Hours Taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in p_tasks %}
+            <tr>
+                <td>{{task.completed_date}}</td>
+                <td>{{task.machine}}</td>
+                <td>{{task.estimated_labour_time}}</td>
+                <td>{{task.actual_downtime}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h4><b>Checklists</b></h4>
+    
+    
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Machine</th>
+                <th>Title</th>
+                <th>Time Taken</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for check in checks %}
+            <tr>
+                <td>{{check.last_completed_date}}</td>
+                <td>{{check.machine}}</td>
+                <td>{{check.title}}</td>
+                <td>{{check.estimated_time}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    <h3><u><b>Breakdowns over period</b></u></h3>
+    
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Machine</th>
+                <th>Problem</th>
+                <th>Time Taken</th>
+                <th>Corrective action</th>
+            </tr>
+    
+        </thead>
+        <tbody>
+                {% for wo in wos %}
+            <tr>
+                
+                <td>{{wo.machine}}</td>
+                <td>{{wo.description}}</td>
+                <td>{{wo.actual_labour_time}}</td>
+                <td>{{wo.resolver_action}}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% autoescape off %}
+    <h4><u>Machine Availability</u></h4>
+    <div class="report-images">
+        <h5>Machine Availability by Machine</h5>
+        <div style="margin-top: .5cm;">
+            
+                {{machine_availability}}                
+            
+        </div>
+        
+        <h5>Overall Machine Availability</h5>
+        {{machine_availability}}
+        
+    </div>
+    {% endautoescape %}

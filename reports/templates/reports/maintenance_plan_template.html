@@ -1,0 +1,59 @@
+
+    <h2>Maintenance Plan Report</h2>
+    <h4><b><u>Report Summary</u></b></h4>
+    <ul class="well">
+        <li>The report covers the period from {{start_date}} to {{end_date}}</li>
+        <li>The equipment covered in this report consists of {{machines}}</li>
+        <li>Over this period, there are scheduled to be {{p_task_count}} preventative tasks resulting in {{scheduled_downtime}} hours of downtime </li>
+        <li>There are also scheduled to be {{check_count}} checklists</li>
+    </ul>
+    
+    <h3><u><b>Planned maintenance over the period</b></u></h3>
+    <h4><b>Preventative Tasks</b></h4>
+    
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Equipment</th>
+                <th>Planned Hours</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in p_tasks %}
+            <tr>
+                <td>{{task.scheduled_for}}</td>
+                <td>{{task.machine}}</td>
+                <td>{{task.estimated_labour_time}}</td>
+                <td>{{task.description}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h4><b>Checklists</b></h4>
+    
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Machine</th>
+                <th>Frequency</th>
+                <th>Estimated Time</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for check in checks %}
+            <tr>
+                <td>{{check.machine}}</td>
+                <td>{{check.frequency}}</td>
+                <td>{{check.estimated_time}}</td>
+                <td>{{check.title}}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    

@@ -23,3 +23,26 @@ article {
 textarea {
     height: 6rem;
 }
+
+.page {
+    margin: 30px auto;
+    padding: 0.5in;
+    width: 21cm;
+    min-height: 29.7cm;
+    height: fit-content;
+    box-shadow: 5px 5px 20px #ccc;
+    background-color: white;
+}
+
+.pdf-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 50%;
+    color: white;
+    background-color: crimson;
+    position: fixed;
+    right: 8rem;
+    bottom: 8rem;
+}

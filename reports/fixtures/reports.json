@@ -1,0 +1,43 @@
+[{
+    "model": "reports.report",
+    "pk": 1,
+    "fields": {
+        "name": "Maintenance Review",
+        "form": "reports.forms.MaintenanceReviewForm"
+    }
+}, {
+    "model": "reports.report",
+    "pk": 2,
+    "fields": {
+        "name": "Breakdown",
+        "form": "reports.forms.BreakdownForm"
+    }
+}, {
+    "model": "reports.report",
+    "pk": 3,
+    "fields": {
+        "name": "Maintenance Plan",
+        "form": "reports.forms.MaintenancePlanForm"
+    }
+}, {
+    "model": "reports.report",
+    "pk": 4,
+    "fields": {
+        "name": "Spares Requirements",
+        "form": "reports.forms.SparesRequirements"
+    }
+}, {
+    "model": "reports.report",
+    "pk": 5,
+    "fields": {
+        "name": "Spares Usage",
+        "form": "reports.forms.SparesUsageForm"
+    }
+}, {
+    "model": "reports.report",
+    "pk": 6,
+    "fields": {
+        "name": "Weak Point Analysis",
+        "form": "reports.forms.WeakPointAnalysisForm"
+    }
+}]
