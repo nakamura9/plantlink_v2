@@ -11,7 +11,7 @@ class InputMixin(forms.Form):
         for field in self.fields:
             fieldname = field
             field = self.fields.get(field)
-            # field.widget.attrs['class'] = "form-control form-control-sm"
+            field.widget.attrs['class'] = " "
             if isinstance(field.widget, forms.Textarea):
                 field.widget.attrs['rows'] = 4
             if isinstance(field, forms.models.ModelChoiceField):
