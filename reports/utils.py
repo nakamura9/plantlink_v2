@@ -61,4 +61,4 @@ def get_breakdowns(mech, frm, to):
 
 def get_downtime(breakdowns):
    return sum(t.downtime.seconds  \
-            for  t in breakdowns if t.actual_labour_time) / 3600.0
+            for  t in breakdowns if t.downtime) / 3600.0

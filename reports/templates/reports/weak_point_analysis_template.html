@@ -2,20 +2,19 @@
     <h2>Weak point Analysis Report</h2>
     <h4><b><u>Report Summary</u></b></h4>
     <ul class="well">
-        <li>The report covers the period from {{object.start_period}} to {{object.end_period}}</li>
+        <li>The report covers the period from {{start_date}} to {{end_date}}</li>
         
-        <li>The equipment covered in this report consists of {{machines}} </li>
-        <li>Over this period, there were {{wos.count}} breakdowns resulting in a total of {{total_downtime}} hours of downtime.
+        <li>The equipment covered in this report consists of <b>{{machines}}</b> </li>
+        <li>Over this period, there were <b>{{wos.count}}</b> breakdowns resulting in a total of <b>{{total_downtime}}</b> hours of downtime.
             <ul>
                 <li><b><u>By Number of breakdowns:</u></b></li>
-                <li>The machine with the highest frequency of breakdowns is <b>{{machine}}</b> with {{machine_breakdowns}} breakdowns</li>
-                <li>For that machine the section with the highest rate of failure was <b>{{section}}</b> with {{section_breakdowns}} breakdowns.</li>
-                <li>The most unreliable component/subassembly of the machine was a identified as <b>{{component}}</b> with {{component_breakdowns}}</li>
+                <li>The machine with the highest frequency of breakdowns is <b>{{max_frequency_machine}}</b> with <b>{{max_machine_frequency}}</b> breakdowns</li>
+                <li>The section with the highest rate of failure was <b>{{max_frequency_section}}</b> with <b>{{max_section_frequency}}</b> breakdowns.</li>
+                <li>The most unreliable component of the machines was a identified as <b>{{max_frequency_component}}</b> with <b>{{max_component_frequency}}</b></li>
                 <li><b><u>By Downtime:</u></b></li>
-                <li>The machine with the highest impact was {{machine_downtime}} with {{machine_downtime_hours}} hours of downtime.</li>
-                <li>The section with the greatest downtime over the stated period was {{section_downtime}} with {{section_downtime_hours}} hours of downtime.</li>
-                <li>The component with the highest impact was {{component_downtime}} with {{component_downtime_hours}} hours of downtime.</li>
-
+                <li>The machine with the highest impact was <b>{{max_downtime_machine}}</b> with <b>{{max_machine_downtime}}</b> hours of downtime.</li>
+                <li>The section with the greatest downtime over the stated period was <b>{{ max_downtime_section }}</b> with <b>{{max_section_downtime}}</b> hours of downtime.</li>
+                <li>The component with the highest impact was <b>{{max_downtime_component}}</b> with <b>{{max_component_downtime}}</b> hours of downtime.</li>
             </ul>
         </li>
     </ul>
@@ -26,23 +25,35 @@
         <thead>
             <tr>
                 <th>Machine</th>
+                <th>Section</th>
+                <th>Component</th>
                 <th>Problem</th>
-                <th>Time Taken</th>
+                <th>Downtime(Hrs)</th>
                 <th>Corrective action</th>
             </tr>
-    
         </thead>
         <tbody>
                 {% for wo in wos %}
             <tr>
                 <td>{{wo.machine}}</td>
+                <td>{{wo.section}}</td>
+                <td>{{wo.component}}</td>
                 <td>{{wo.description}}</td>
-                <td>{{wo.actual_labour_time}}</td>
+                <td>{{wo.downtime_hours}}</td>
                 <td>{{wo.resolver_action}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% autoescape off %}
+    <h4><u>Machine Breakdown Frequency vs Duration</u></h4>
+    {{machine_frequency_vs_duration}}
+    <br>
+    <h4><u>Section Breakdown Frequency vs Duration</u></h4>
+    {{section_frequency_vs_duration}}
+    <br>
+    <h4><u>Component Breakdown Frequency vs Duration</u></h4>
+    {{component_frequency_vs_duration}}
     
-   
+    {% endautoescape %}
     

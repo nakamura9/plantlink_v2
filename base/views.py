@@ -17,6 +17,8 @@ from base.models import BaseModel
 from base.model_utils import child_table_fields
 import json
 import urllib
+from django.db.models import Q
+
 
 class LoginView(FormView):
     template_name = os.path.join("base", "login.html")
@@ -213,3 +215,31 @@ def get_child_table_content(request, app=None, model=None, parent_id=None):
     return JsonResponse({'data': data})
 
 
+def get_model_items(request, app_name=None, model_name=None):
+    model = apps.get_model(app_label=app_name, model_name=model_name)
+    filter_dict = {}
+    try:
+        args = json.loads(request.body)
+    except:
+        args = {}
+    
+    or_queries = None
+    if args.get('filters'):
+        filters = json.loads(args['filters']) if type(args['filters']) == str else args['filters']
+        and_filters = {}
+        for k, v in filters.items():
+            if k.startswith('or__'):
+                if not or_queries:
+                    or_queries = Q(**{k[4:] :  v})
+                else:
+                    or_queries.add(Q(**{k[4:] :  v}), Q.OR)
+            else:
+                and_filters[k] = v
+        filter_dict.update(and_filters)
+        
+    qs = model.objects.all()
+    if filter_dict:
+        qs = model.objects.filter(**filter_dict)
+        if or_queries:
+            qs = qs.filter(or_queries)
+    return JsonResponse({'data': [(i.pk, str(i)) for i in qs]})

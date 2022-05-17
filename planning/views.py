@@ -14,6 +14,8 @@ class CalendarView(TemplateView):
 
 
 def month(request, year=None, month=None):
+    ''' Javascript uses 0 indexed dates '''
+    month = month + 1
     _, length = calendar.monthrange(year, month)
     start = datetime.date(year, month, 1)
     end = datetime.date(year, month, length)
@@ -67,7 +69,11 @@ def month(request, year=None, month=None):
         })
     return JsonResponse(events, safe=False)
 
+
 def week(request, year=None, month=None, day=None):
+    ''' Javascript uses 0 indexed dates '''
+
+    month = month + 1
     current_date = datetime.date(year, month, day)
     curr_weekday = current_date.isoweekday()
     start = current_date + datetime.timedelta(days=(0 - curr_weekday))
@@ -122,7 +128,11 @@ def week(request, year=None, month=None, day=None):
         })
     return JsonResponse(events, safe=False)
 
+
 def day(request, year=None, month=None, day=None):
+    ''' Javascript uses 0 indexed dates '''
+
+    month = month + 1
     current_date = datetime.date(year, month, day)
     checklists = Checklist.objects.filter(
         resolver__id=request.user.pk,

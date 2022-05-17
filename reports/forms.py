@@ -28,3 +28,17 @@ class WeakPointAnalysisForm(forms.Form):
     to_date = forms.DateField()
     all_machines = forms.BooleanField(required=False)
     machine = forms.ModelChoiceField(Machine.objects.all(), required=False)
+
+
+class SparesUsageForm(forms.Form):
+    from_date = forms.DateField()
+    to_date = forms.DateField()
+    all_machines = forms.BooleanField(required=False)
+    machine = forms.ModelChoiceField(Machine.objects.all(), required=False)
+
+
+class SparesRequirements(forms.Form):
+    from_date = forms.DateField()
+    to_date = forms.DateField()
+    all_machines = forms.BooleanField(required=False)
+    machine = forms.ModelChoiceField(Machine.objects.all(), required=False)

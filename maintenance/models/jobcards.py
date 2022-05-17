@@ -86,6 +86,13 @@ class WorkOrder(BaseModel):
     def is_open(self):
         return self.status == "requested" or self.status == "accepted"
 
+    @property
+    def downtime_hours(self):
+        if not self.downtime:
+            return 0
+
+        return self.downtime.seconds / 3600.0
+
     def save(self, *args, **kwargs):
         obj = super(WorkOrder, self).save(*args, **kwargs)
         net_spares = [sp for sp in self.spares_issued.all() if sp not in \
@@ -221,3 +228,6 @@ class SparesRequest(BaseModel):
     unit = models.CharField(max_length = 32, null=True, blank=True)
     quantity = models.FloatField(default=0.0)
     preventative_task = models.ForeignKey("PreventativeTask", null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return "REQ-%06d" % self.pk

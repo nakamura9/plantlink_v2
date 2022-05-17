@@ -1,1 +1,59 @@
-<!-- write your report here -->
+
+    <h2>Spares Utilized for Maintenance Report</h2>
+    <h4><b><u>Report Summary</u></b></h4>
+    <ul class="well">
+        <li>The report covers the period from {{start_date}} to {{end_date}}</li>
+        <li>The scope of this report is {{machines}}</li>
+        <li>
+            Over this period, {{wos.count}} breakdowns occured and {{p_tasks.count}} preventative 
+            tasks were completed requiring {{spares_count}} spares items.
+        </li>
+    </ul>
+    
+    <h3><u><b>List of used spares</b></u></h3>
+    <h4><u>For Breakdowns</u></h4>
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Stock ID:</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Work Order No.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for wo in wos %}
+            {% for s in wo.spares_issued.all %}
+            <tr>
+                <td>{{s.stock_id}}</td>
+                <td>{{s.name}}</td>
+                <td>{{s.description}}</td>
+                <td>{{wo}}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <h4><u>For Preventative Tasks</u></h4>
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Stock ID:</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Preventative task No.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in p_tasks %}
+            {% for s in task.spares_used.all %}
+            <tr>
+                <td>{{s.stock_id}}</td>
+                <td>{{s.name}}</td>
+                <td>{{s.description}}</td>
+                <td>{{task}}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>

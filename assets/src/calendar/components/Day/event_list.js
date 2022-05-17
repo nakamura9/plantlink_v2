@@ -5,9 +5,7 @@ import Context from '../../container/provider';
 
 const HoverableEventList = (props) =>{
     const [showEvents, setShowEvents] =  useState(false)
-    const urlPrefix = props.context.app 
-      ? `/app/update/${props.context.app}/${props.context.model}/`
-      : "/app/update/planner/event/"
+    
 
     return(
             <div> 
@@ -34,7 +32,7 @@ const HoverableEventList = (props) =>{
                     {props.events.map((event) =>(
                     <a 
                       key={event.id}
-                      href={urlPrefix + event.id}>
+                      href={event.id}>
                         <div
                           className={styles.eventBox + " mb-1"} 
                           style={{backgroundColor: props.context.primary}}

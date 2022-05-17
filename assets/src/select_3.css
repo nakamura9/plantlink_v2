@@ -1,0 +1,95 @@
+.container {
+    position:relative;
+    min-width: 150px;
+}
+
+.option_list {
+    box-shadow: 0px 8px 4px rgba(220,220,220, 0.3);
+    z-index: 1000;
+    padding-left: 0px;
+    background-color: white;
+    position: absolute;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.option_list::-webkit-scrollbar{
+    width: 8px;
+    background-color: #ddd;
+ }
+
+.option_list::-webkit-scrollbar-thumb {
+    width: 8px;
+    background: steelblue;
+}
+
+
+
+.option_list li{
+    list-style-type: none;
+    padding: 0.5rem;
+    transition: 0.2s;
+    color: steelblue;
+
+}
+
+.option_list li:hover{
+    background-color: powderblue;
+}
+
+.new_option {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: steelblue;
+}
+
+.multipleSelection {
+    padding: .25rem .5rem;
+    padding-left: 0px;
+    background-color: #eee;
+    border-radius: .75rem;
+    font-size: 1rem;
+    margin: .25rem;
+    display:inline-block
+}
+
+
+.multipleSelectionClear {
+    margin-right: .25rem;
+    background-color: #ccc;
+    padding: .25rem .5rem;
+    border-radius: 0.75rem;
+}
+
+.multipleInput {
+    border: 0px !important;
+    background-color: transparent !important;
+}
+
+.multipleInput:focus {
+    box-shadow: none !important;
+}
+
+.selectThreeInput {
+    border: 1px solid #ccc ;
+    border-radius: .25rem;
+    padding: .25rem;
+}
+
+.activeFilter {
+    padding: .25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    border: 1px solid steelblue;
+    margin: 0.125rem;
+    display: inline-block
+
+}
+
+.filterTitle {
+    color: rgba(30, 30, 30, 0.3);
+    font-weight: bold;
+    font-size: 0.8rem;
+}

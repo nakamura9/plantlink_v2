@@ -4,6 +4,7 @@ import OneTable from './awesome_table/container/root';
 import axios from 'axios';
 import BaseTreeSelectWidget from './treeview';
 import { node } from 'prop-types';
+import SelectThree from '../select_3'
 
 const children = document.querySelectorAll('.child-table')
 
@@ -35,7 +36,6 @@ if(tree && tree.dataset.url) {
         method:"GET",
         url: tree.dataset.url
     }).then(res => {
-        console.log(res.data.data)
         const root = ReactDOM.createRoot(tree)
         root.render(
             <BaseTreeSelectWidget 
@@ -47,3 +47,28 @@ if(tree && tree.dataset.url) {
     })
     
 }
+
+
+const search = document.querySelectorAll('.search-widget')
+
+
+search.forEach(field => {
+    const multiple = field.classList.contains('multiple')
+    let selected = ''
+    
+    if(multiple) {
+        selected = Array.from(field.options).filter(opt => opt.selected).map(opt => opt.value)
+    }else {
+        selected = field.value
+    }
+    const root = ReactDOM.createRoot(field.parentElement)
+    root.render(<SelectThree 
+        filters={field.dataset.filters || ""}
+        model={field.dataset.model}
+        initial={selected}
+        app={field.dataset.app}
+        required={field.required}
+        multiple={multiple}
+        disabled={field.disabled || field.dataset.readonly == "true"}
+        name={field.name}/>)
+})

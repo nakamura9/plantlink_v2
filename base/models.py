@@ -11,6 +11,7 @@ from crispy_forms.helper import FormHelper
 from django_filters import FilterSet
 
 from django import forms
+from base.forms import InputMixin
 
 roles = [("admin", "Admin"),
         ("artisan", "Artisan"),
@@ -69,7 +70,7 @@ class BaseModel(models.Model):
             form_params['clean'] = cls.clean_form
         
         form = type(f'{cls._meta.model_name}_form',
-                    (forms.ModelForm,),
+                    (InputMixin, forms.ModelForm,),
                     form_params)
 
         return form

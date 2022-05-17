@@ -1,4 +1,3 @@
-from turtle import heading
 import pygal 
 from reports.utils import (
    CustomStyle, calculate_spans, get_labels, get_breakdowns,
