@@ -171,7 +171,7 @@ class BaseUpdateView(ModelMixin, UpdateView):
 
     def get_form_class(self):
         model = self.get_model_class()
-        return model.get_form()
+        return model.get_form(is_update=True)
 
     def form_valid(self, form):
         resp = super().form_valid(form)

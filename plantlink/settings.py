@@ -160,4 +160,4 @@ WKHTMLTOPDF_CMD_OPTIONS = {
     'enable-local-file-access': True
 }
 
-WKHTMLTOPDF_DEBUG = False
+WKHTMLTOPDF_DEBUG = True

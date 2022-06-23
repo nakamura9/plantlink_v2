@@ -51,6 +51,5 @@ class ReportPDFView(PDFTemplateView):
         context = super().get_context_data(**kwargs)
         report = Report.objects.get(name=self.kwargs['name'])
         data = report.render_func(self.request.GET)
-        print(data)
         context.update(data)
         return context

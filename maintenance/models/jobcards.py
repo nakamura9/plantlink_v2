@@ -24,6 +24,13 @@ class WorkOrder(BaseModel):
     """
 
     list_fields = ['machine', 'assigned_to', 'status']
+    dashboard_template = "maintenance/approval.html"
+    read_only_fields = [
+        'assigned_to', 'machine', 'section', 
+        'subunit', 'subassembly', 'component', 
+        'estimated_labour_time', 'status', 'priority',
+        'description', 'execution_date'
+        ]
     filter_fields = {
         'machine': ['exact'],
         'assigned_to': ['exact'],
@@ -94,6 +101,8 @@ class WorkOrder(BaseModel):
         return self.downtime.seconds / 3600.0
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            self.status = "requested"
         obj = super(WorkOrder, self).save(*args, **kwargs)
         net_spares = [sp for sp in self.spares_issued.all() if sp not in \
                             self.spares_returned.all()]
@@ -119,6 +128,12 @@ class PreventativeTask(BaseModel):
     """
 
     list_fields = ['machine', 'section', 'estimated_downtime']
+    read_only_fields = [
+        'description', 'estimated_labour_time', 'estimated_downtime', 'scheduled_for',
+        'frequency', 'assignments', 'required_spares', 'machine', 'section',
+        'subunit', 'subassembly', 'component'
+
+    ]
     filter_fields = {
         'machine': ['exact'],
     }
@@ -128,7 +143,7 @@ class PreventativeTask(BaseModel):
         'frequency',
         'estimated_labour_time',
         'estimated_downtime',
-        'actual_downtime',
+        'assignments',
         'scheduled_for',
         'required_spares',
         'column_break',
@@ -137,9 +152,9 @@ class PreventativeTask(BaseModel):
         'subunit',
         'subassembly',
         'component',
-        'completed_date',
         'column_break',
-        'assignments',
+        'completed_date',
+        'actual_downtime',
         'assignments_accepted',
         'feedback',        
         'spares_used',

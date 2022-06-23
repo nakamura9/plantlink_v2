@@ -27,6 +27,11 @@ class Checklist(BaseModel):
     """
 
     list_fields = ['machine', 'section', 'resolver']
+    read_only_fields = [
+        'title', 'creation_date', 'last_completed_date',
+        'estimated_time', 'start_time', 'resolver', 'category', 'frequency',
+        'machine', 'section', 'subunit', 'subassembly', 'component'
+    ]
     filter_fields = {
         'machine': ['exact'],
         'resolver': ['exact'],
@@ -147,6 +152,12 @@ class Checklist(BaseModel):
     def get_type(self):
         return "checklist"
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.last_completed_date = datetime.date.today()
+
+        super().save(*args, **kwargs)
+
 
 class ChecklistItem(models.Model):
     field_order = ['description']
@@ -166,4 +177,4 @@ class ChecklistComment(models.Model):
 
     parent = models.ForeignKey('maintenance.checklist', on_delete=models.CASCADE)
     content = models.TextField()
-    author = models.ForeignKey('auth.user', on_delete=models.CASCADE)
+    # author = models.ForeignKey('auth.user', on_delete=models.CASCADE)

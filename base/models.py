@@ -41,7 +41,7 @@ class BaseModel(models.Model):
         return type(cls._meta.model_name + "_filters", (FilterSet, ), {'Meta': meta})
 
     @classmethod
-    def get_form(cls):
+    def get_form(cls, is_update=False):
         fields = [f for f in cls.field_order if f not in ["column_break", "section_break"] and isinstance(f, str) and ":" not in f]
         child_table_fields = [f.split('.')[1] for f in cls.field_order if isinstance(f, str) and '.' in f]
         meta = type('Meta', tuple(), {
@@ -51,6 +51,12 @@ class BaseModel(models.Model):
         
         def form_init(self, *args, **kwargs):
             super(self.__class__, self).__init__(*args, **kwargs)            
+            if hasattr(cls, "read_only_fields") and is_update:
+                for field in self.fields:
+                    if not field in cls.read_only_fields: continue                    
+                    field = self.fields.get(field)
+                    field.widget.attrs['readonly'] = 'readonly' 
+            
             self.helper = FormHelper()
             self.helper.layout = build_layout(cls.field_order)
             if hasattr(cls, 'script') and cls.script:

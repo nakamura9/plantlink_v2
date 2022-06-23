@@ -17,6 +17,20 @@
     </div>
   </nav>
   <article>
+        {% for msg in messages %}
+          <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <button class="btn btn-sm" type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            {{msg}}
+          </div>
+        {% endfor %}
+
+        <script>
+          $(".close").click(() => {console.log("clicked"); $(".alert").remove()})
+
+        </script>
         <div id="global-alerts" class="row"></div>
         <div id="page-content">{% block content %}{% endblock %}</div>
   </article>
