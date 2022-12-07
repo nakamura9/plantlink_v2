@@ -1,21 +1,30 @@
 {
   "status": "done",
   "assets": {
+    "runtime.js": {
+      "name": "runtime.js",
+      "path": "C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\runtime.js"
+    },
     "calendar.js": {
       "name": "calendar.js",
-      "path": "C:\\Users\\nakamura9a\\documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\calendar.js"
+      "path": "C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\calendar.js"
     },
     "ui.js": {
       "name": "ui.js",
-      "path": "C:\\Users\\nakamura9a\\documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\ui.js"
+      "path": "C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\bundles\\ui.js"
     }
   },
   "chunks": {
+    "runtime": [
+      "runtime.js"
+    ],
     "calendar": [
       "calendar.js"
     ],
     "ui": [
       "ui.js"
     ]
-  }
+  },
+  "error": "ModuleBuildError",
+  "message": "Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\src\\widgets\\awesome_table\\fields\\search.js: Unexpected token, expected \",\" (13:38)\n\n  11 |             target: {\n  12 |                 name: props.name,\n> 13 |                 value: state.selected state.inputVal,\n     |                                       ^\n  14 |                 valueID: \n  15 |\n  16 |             }\n    at instantiate (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:72:32)\n    at constructor (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:358:12)\n    at Object.raise (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:3335:19)\n    at Object.unexpected (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:3373:16)\n    at Object.expect (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:4002:28)\n    at Object.parseObjectLike (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:13486:14)\n    at Object.parseExprAtom (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:12890:23)\n    at Object.parseExprAtom (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:8034:20)\n    at Object.parseExprSubscripts (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:12540:23)\n    at Object.parseUpdate (C:\\Users\\nakamura9a\\Documents\\code\\git\\plant_link\\plantlink\\assets\\node_modules\\@babel\\parser\\lib\\index.js:12519:21)"
 }

@@ -1,15 +1,16 @@
 import React from 'react'
-import SelectThree from '../../select_3'
-import DynamicSelect from '../../dynamic_select'
+import SelectThree from '../../../select_3'
+// import DynamicSelect from '../../dynamic_select'
 import {useState} from 'react'
 
 const SearchField = (props) => {
+    const [app, model] = props.options.split('.')
     const onSelect = (state) => {
         props.onChange({
             target: {
                 name: props.name,
-                value: state.inputVal,
-                valueID: state.selected 
+                value: state.selected ,
+                valueID: state.inputVal
 
             }
         })
@@ -19,9 +20,9 @@ const SearchField = (props) => {
         return null
     }
     return  <SelectThree 
-                model={props.options.model}
-                app={props.options.app}
-                filters={props.options.filters}
+                model={model}
+                app={app}
+                filters={{}}
                 name={props.name}
                 onSelect={onSelect}
                 onClear={onClear}
@@ -30,36 +31,36 @@ const SearchField = (props) => {
                 clear />
 }
 
-const DynamicSearchField = (props) => {
-    const onSelect = (state) => {
+// const DynamicSearchField = (props) => {
+//     const onSelect = (state) => {
 
-        props.onChange({
-            dynamicField: true,
-            model: state.model.name,
-            instance: state.instance[0],
-            modelname: props.options.modelname,
-            instancename: props.options.instancename,
-            fieldname: props.name,
-            field: {
-                model: state.model.name,
-                instance: state.instance[0]
-            }
-        })
-    }
+//         props.onChange({
+//             dynamicField: true,
+//             model: state.model.name,
+//             instance: state.instance[0],
+//             modelname: props.options.modelname,
+//             instancename: props.options.instancename,
+//             fieldname: props.name,
+//             field: {
+//                 model: state.model.name,
+//                 instance: state.instance[0]
+//             }
+//         })
+//     }
 
-    const onClear = () => {
-        return null
-    }
-    return  <DynamicSelect 
-                models={props.options.models}
-                model_fieldname={props.options.modelname}
-                instance_fieldname={props.options.instancename}
-                onSelect={onSelect}
-                onClear={onClear}
-                initial={props.value}
-                disabled={props.frozen}
-                name={props.name}
-            />
-}
+//     const onClear = () => {
+//         return null
+//     }
+//     return  <DynamicSelect 
+//                 models={props.options.models}
+//                 model_fieldname={props.options.modelname}
+//                 instance_fieldname={props.options.instancename}
+//                 onSelect={onSelect}
+//                 onClear={onClear}
+//                 initial={props.value}
+//                 disabled={props.frozen}
+//                 name={props.name}
+//             />
+// }
 
-export {DynamicSearchField, SearchField}
+export { SearchField}

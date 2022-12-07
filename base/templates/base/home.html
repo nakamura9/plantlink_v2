@@ -1,6 +1,40 @@
 {% extends 'window.html' %}
 
 {% block content %}
-home
+
+<style>
+    
+
+
+</style>
+
+<div class="home-container">
+    <div class="home-card">
+        <div>
+            <i class="fas fa-boxes fa-5x  "></i>
+            <a href="/app/inventory/"><h4>Inventory</h4></a>
+        </div>
+    </div>
+    <div class="home-card">
+        <div>
+            <i class="fas fa-calendar-alt fa-5x  "></i>
+            <a href="/calendar/"><h4>Planning</h4></a>
+        </div>
+    </div>
+    <div class="home-card">
+        <div>
+            <i class="fas fa-chart-line fa-5x  "></i>
+            <a href="/reports/"><h4>Reports</h4></a>
+        </div>
+    </div>
+    <div class="home-card">
+        <div>
+            <i class="fas fa-cogs fa-5x  "></i>
+            <a href="/app/maintenance/"><h4>Maintenance</h4></a>
+        </div>
+    </div>
+
+</div>
+
 
 {% endblock %}

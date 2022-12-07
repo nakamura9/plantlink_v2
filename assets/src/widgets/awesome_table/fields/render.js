@@ -5,6 +5,7 @@ import {TextField, CharField} from './text'
 import DateField  from './datetime'
 import SelectField from './select'
 import BooleanField from './boolean'
+import { SearchField } from './search'
 
 
 const renderField = (field, initial, handler, context) => {
@@ -41,14 +42,14 @@ const renderField = (field, initial, handler, context) => {
                                 onChange={handler}
                                 frozen={field.frozen}/>
             break;
-        // case 'search':
-        //     renderedField = <SearchField 
-        //                         options={field.options}
-        //                         name={field.name} 
-        //                         onChange={handler}
-        //                         value={initial}
-        //                         frozen={field.frozen}/>
-        //     break;
+        case 'link':
+            renderedField = <SearchField 
+                                options={field.options}
+                                name={field.name} 
+                                onChange={handler}
+                                value={initial}
+                                frozen={field.frozen}/>
+            break;
         // case 'dynamic_search':
         //     renderedField = <DynamicSearchField 
         //                         options={field.options}

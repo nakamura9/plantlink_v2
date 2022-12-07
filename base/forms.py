@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth import authenticate
+from base.models import Account
 from django.contrib.auth import login as auth_login
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 import json
+
 
 class InputMixin(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -49,4 +51,29 @@ class LoginForm(forms.Form):
 #     class Meta:
 #         model = Modelname
 #         fields = fields 
-#         
+#     
+
+class UserForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+
+    class Meta:
+        model = Account
+        fields = ('username', 'email', 'is_superuser', 'first_name', 'last_name', 'role','password1', 'password2')
+
+    def clean(self):
+        # cleaned_data = super().clean()
+        # print(cleaned_data)
+        print(self.cleaned_data)
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return self.cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user

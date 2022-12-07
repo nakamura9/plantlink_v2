@@ -18,11 +18,17 @@ class CSVImportDashboard(TemplateView):
 class ImportView(FormView):
     form_class = forms.ImportForm
     template_name = os.path.join("inventory", "home.html")
-    success_url = "/csv-dashboard/" 
+    success_url = "/app/inventory/" 
 
     def form_valid(self, form):
         resp = super().form_valid(form)
-        parse_file(form.cleaned_data['file'].file)
+        valid = False
+        for ext in ["xlsx", "xls", "csv"]:
+            if ext in form.cleaned_data['file'].name:
+                valid = True
+        if not valid:
+            raise Exception("Invalid file extension")
+        parse_file(form.cleaned_data['file'].file, form.cleaned_data['file'].name)
         # t = threading.Thread(target=parse_file, args=(form.cleaned_data['file'].file,))
 
         return resp

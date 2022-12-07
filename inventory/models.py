@@ -15,56 +15,20 @@ class Asset(BaseModel):
     Model that represents a company asset.
 
     #Should act as the Machine model base class
-    Has a spares list relationship via a foreign key
 
     """
     list_fields = []
     filter_fields = {}
     field_order = [
         'asset_unique_id',
-        'column_break',
-        'spares_list'
+        'column_break'
     ]
     asset_unique_id = models.CharField(max_length=32, unique=True)
-    spares_list = models.ManyToManyField("Spares")
+    
 
     def __str__(self):
         return self.asset_unique_id
 
-
-class Spares(BaseModel):
-    """
-    Represents an item that can replace some piece of equipment and can be retrieved from stores.
-
-    Linked to spares using stock_id
-    #relationship, all spares are machine components but not all components are spares.
-    """
-
-    list_fields = [ 'quantity']
-    filter_fields = {
-        'name': ['icontains']
-    }
-    field_order = [
-        'name',
-        'description',
-        'stock_id',
-        'column_break',
-        'quantity',
-        'reorder_level',
-        'reorder_quantity',
-        'last_order_price'
-    ]
-    
-    name = models.CharField(max_length = 32)#make unique
-    description = models.CharField(max_length= 128, null=True, blank=True)
-    stock_id = models.CharField(max_length=32, unique=True)
-    quantity = models.IntegerField( default = 0)
-    reorder_level = models.IntegerField(default = 0)
-    reorder_quantity = models.IntegerField( default = 0)
-    last_order_price = models.FloatField(default = 0.0)
-    
-    def __str__(self):
-        return self.stock_id
 
 
 class Plant(BaseModel):
@@ -84,91 +48,6 @@ class Plant(BaseModel):
     
     def __str__(self):
         return self.plant_name
-
-
-class RunData(BaseModel):
-    class Meta:
-        verbose_name = "Run Schedule"
-    list_fields = ['start_date', 'end_date', 'run_hours']
-    filter_fields = {
-        'start_date': ['exact']
-    }
-    field_order = [
-        'start_date',
-        'end_date',
-        'column_break',
-        'run_hours',
-        'section_break',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'column_break',
-        'friday',
-        'saturday',
-        'sunday'
-    ]
-
-    start_date = models.DateField()
-    end_date = models.DateField()
-    run_hours = models.FloatField()
-    
-    monday = models.BooleanField(default=False)
-    tuesday = models.BooleanField(default=False)
-    wednesday = models.BooleanField(default=False)
-    thursday = models.BooleanField(default=False)
-    friday = models.BooleanField(default=False)
-    saturday = models.BooleanField(default=False)
-    sunday = models.BooleanField(default=False)
-    #override save method to specify run days
-    #add specific days
-    #write property that gets total run hours  for a given period
-    
-    def __str__(self):
-        return f'{self.start_date} to {self.end_date}'
-
-    def is_running(self, day):
-        if isinstance(day, datetime.datetime):
-            day = day.date()
-        #hasn't been applied yet
-        if day < self.start_date or day > self.end_date:
-            return False
-
-        run_days = {0:self.monday,
-                    1:self.tuesday,
-                    2:self.wednesday,
-                    3:self.thursday,
-                    4:self.friday,
-                    5:self.saturday,
-                    6:self.sunday}
-        
-        return run_days[day.weekday()]
-
-    @property
-    def run_days(self):
-        bools = [self.monday, self.tuesday, self.wednesday, self.thursday,
-            self.friday, self.saturday, self.sunday]
-        run_count = 0
-        for b in bools:
-            if b:
-                run_count += 1
-        return run_count
-
-    @property
-    def weekly_run_hours(self):
-        return self.run_days * self.run_hours
-
-    @property
-    def total_run_hours(self):
-        curr_day = self.start_date
-        hours = 0
-        while curr_day < self.end_date:
-            if self.is_running(curr_day):
-                hours += self.run_hours
-            curr_day += datetime.timedelta(days=1)
-
-        return hours
-
 
 class Machine(BaseModel):
     """
@@ -213,7 +92,6 @@ class Machine(BaseModel):
         'manufacturer',
         'commissioning_date',
         'section_break',
-        'run_data'
     ]
 
     dashboard_template = os.path.join("inventory", 'machine.html')
@@ -223,7 +101,7 @@ class Machine(BaseModel):
     manufacturer = models.CharField(max_length=128)
     asset_data = models.ForeignKey("Asset", null=True, blank=True, verbose_name="Asset",on_delete=models.SET_NULL)
     commissioning_date = models.DateField(blank = True, null=True)
-    run_data = models.ManyToManyField("RunData")
+    run_data = models.ManyToManyField("planning.RunPlanItem", blank=True)
 
     def dashboard_context(self):
         return {
@@ -488,7 +366,6 @@ class Component(BaseModel):
     parent : SubAssembly
     child  : None
     
-    closely related to spares
 
     Example:
     =======
@@ -515,8 +392,7 @@ class Component(BaseModel):
         'machine',
         'section',
         'subunit',
-        'subassembly',
-        
+        'subassembly'
     ]
     unique_id = models.CharField(max_length=24, primary_key=True)
     component_name = models.CharField(max_length = 128)
@@ -525,7 +401,7 @@ class Component(BaseModel):
     subunit = models.ForeignKey("SubUnit", null=True, blank=True,
         on_delete=models.SET_NULL)
     subassembly = models.ForeignKey("SubAssembly", null=True, on_delete=models.SET_NULL)
-    spares_data=models.ManyToManyField("Spares",verbose_name="linked spares")
+    spares_data=models.ManyToManyField("Item",verbose_name="linked spares")
 
     dashboard_template = os.path.join("inventory", 'component.html')
     
@@ -573,81 +449,3 @@ class Item(BaseModel):
         return self.name
 
 
-class Order(BaseModel):
-    """
-    Model representing customer order on which production calender is based.
-
-    Fields: order_number, description, quantity, unit_price, manufacture_date, flute_profile(enum), liner(enum), layers(enum), delivery_date, customer, production_status(enum),delivery_status(enum)`
-    
-    """
-    list_fields = ['customer', 'production_status', 'delivery_status']
-    filter_fields = {
-        'customer': ['icontains'],
-        'production_status': ['exact'],
-        'delivery_status': ['exact']
-    }
-    field_order = [
-        'order_number',
-        'description',
-        'customer',
-        'quantity',
-        'column_break',
-        'unit_price',
-        'flute_profile',
-        'liner',
-        'layers', 
-        'column_break',
-        'manufacture_date',
-        'delivery_date',
-        'production_status',
-        'delivery_status'
-    ]
-
-    def __init__(self, *args, **kwargs):
-        self.actual_delivery_epoch = None
-        super(Order,self).__init__(*args,**kwargs)
-
-    order_number = models.CharField(max_length= 32, primary_key=True)
-    description = models.CharField(max_length=64)
-    quantity =models.IntegerField()
-    unit_price = models.FloatField()
-    manufacture_date = models.DateField()
-    flute_profile = models.CharField(max_length=1, choices=[
-        ("a", "A Flute"),
-        ("b", "B Flute"),
-        ("c", "C Flute"),
-    ])
-    liner = models.CharField(max_length=32, choices=[
-        ("kraft", "Kraft"),
-    ])
-    layers = models.IntegerField(choices = [
-        (1, "Single Wall Board"),
-        (2, "Double Wall Board"),
-    ]) 
-    delivery_date = models.DateField()
-    customer = models.CharField(max_length= 32)
-    production_status = models.CharField(max_length=32, choices=[
-        ("planned", "Planned"),
-        ("ongoing", "Ongoing"),
-        ("completed", "Completed")
-    ])
-    delivery_status = models.CharField(max_length=16, choices = (
-        ("storage", "In Storage"),
-        ("transit", "In Transit"),
-        ("delivered", "Delivered")
-    ))
-
-    def save(self, *args, **kwargs):
-        if self.delivery_status == "delivered":
-            self.actual_delivery_epoch = timezone.now().date()
-        super(Order, self).save(*args, **kwargs)
-
-    @property
-    def actual_delivery_date(self):
-        if self.delivery_status != "delivered":
-            return "Undelivered"
-        else:
-            return self.actual_delivery_epoch.strftime("%d/%m/%Y")
-
-    def __str__(self):
-        return "%s: %s" % (self.order_number, self.description)

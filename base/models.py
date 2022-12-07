@@ -11,7 +11,7 @@ from crispy_forms.helper import FormHelper
 from django_filters import FilterSet
 
 from django import forms
-from base.forms import InputMixin
+
 
 roles = [("admin", "Admin"),
         ("artisan", "Artisan"),
@@ -42,6 +42,8 @@ class BaseModel(models.Model):
 
     @classmethod
     def get_form(cls, is_update=False):
+        from base.forms import InputMixin
+        
         fields = [f for f in cls.field_order if f not in ["column_break", "section_break"] and isinstance(f, str) and ":" not in f]
         child_table_fields = [f.split('.')[1] for f in cls.field_order if isinstance(f, str) and '.' in f]
         meta = type('Meta', tuple(), {

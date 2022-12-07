@@ -85,8 +85,8 @@ class WorkOrder(BaseModel):
     actual_labour_time = models.DurationField(null=True, choices=time_duration)
     downtime = models.DurationField(null=True, choices=time_duration)
     completion_date = models.DateField(null=True, blank=True)
-    spares_issued = models.ManyToManyField("inventory.Spares", related_name="%(class)s_spares_issued")
-    spares_returned = models.ManyToManyField("inventory.Spares",related_name="%(class)s_spares_returned")
+    spares_issued = models.ManyToManyField("inventory.Item", related_name="%(class)s_spares_issued")
+    spares_returned = models.ManyToManyField("inventory.Item",related_name="%(class)s_spares_returned")
     comments = models.TextField(blank=True, default="")
 
     @property
@@ -169,7 +169,7 @@ class PreventativeTask(BaseModel):
         "bi-annually": 180,
         "yearly": 360}
 
-    machine = models.ForeignKey("inventory.Machine", null=True, blank=True, on_delete=models.SET_NULL)
+    machine = models.ForeignKey("inventory.Machine", null=True, on_delete=models.SET_NULL)
     section = models.ForeignKey("inventory.Section", null=True, blank=True, on_delete=models.SET_NULL)
     subunit = models.ForeignKey("inventory.SubUnit", null=True, blank=True, on_delete=models.SET_NULL)
     subassembly = models.ForeignKey("inventory.SubAssembly", null=True, blank=True, on_delete=models.SET_NULL)
@@ -188,14 +188,14 @@ class PreventativeTask(BaseModel):
     estimated_labour_time = models.DurationField(choices=time_duration)
     estimated_downtime = models.DurationField(choices=time_duration)
     scheduled_for = models.DateField()
-    required_spares = models.ManyToManyField("inventory.Spares", related_name="%(class)s_required_spares")
-    assignments = models.ManyToManyField("base.Account", related_name="%(class)s_assignments_made")
-    assignments_accepted = models.ManyToManyField("base.Account", related_name="%(class)s_assignments_accepted")
-    feedback = models.TextField(null=True)
-    actual_downtime = models.DurationField(null=True,choices=time_duration)
+    required_spares = models.ManyToManyField("inventory.Item", related_name="%(class)s_required_spares", blank=True)
+    assignments = models.ManyToManyField("base.Account", related_name="%(class)s_assignments_made", blank=True)
+    assignments_accepted = models.ManyToManyField("base.Account", related_name="%(class)s_assignments_accepted", blank=True)
+    feedback = models.TextField(null=True, blank=True)
+    actual_downtime = models.DurationField(null=True,choices=time_duration, blank=True)
     completed_date = models.DateField(null=True, blank=True)
-    spares_used = models.ManyToManyField("inventory.Spares", related_name="%(class)s_spares_used")
-    comments  = models.TextField(null=True)
+    spares_used = models.ManyToManyField("inventory.Item", related_name="%(class)s_spares_used", blank=True)
+    comments  = models.TextField(null=True, blank=True)
     
 
     def __str__(self):
@@ -225,24 +225,33 @@ class PreventativeMaintenanceItem(models.Model):
     description = models.TextField()
 
 class SparesRequest(BaseModel):
-    list_fields = ['preventative_task','unit', 'quantity']
+    list_fields = ['preventative_task','date', 'name']
     filter_fields = {
-        'unit': ['exact'],
+        'date': ['exact'],
         'preventative_task': ['exact'],
     }
     field_order = [
+        'date',
         'name',
-        'unit',
-        'quantity',
         'column_break',
-        'linked_spares',
         'preventative_task',
+        'requested_by',
+        'section_break',
+        'child:maintenance.sparesrequestitem'
     ]
-    linked_spares = models.ForeignKey("inventory.Spares", null=True, on_delete=models.SET_NULL)
+    date = models.DateField()
     name = models.CharField(max_length= 32, null=True, blank=True)
-    unit = models.CharField(max_length = 32, null=True, blank=True)
-    quantity = models.FloatField(default=0.0)
+    requested_by = models.CharField(max_length= 32, null=True, blank=True)
     preventative_task = models.ForeignKey("PreventativeTask", null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return "REQ-%06d" % self.pk
+
+
+class SparesRequestItem(models.Model):
+    field_order = ['item', 'unit', 'quantity']
+
+    parent = models.ForeignKey('maintenance.sparesrequest', on_delete=models.CASCADE)
+    item = models.ForeignKey("inventory.Item", null=True, on_delete=models.SET_NULL)
+    unit = models.CharField(max_length = 32, null=True, blank=True)
+    quantity = models.FloatField(default=0.0)

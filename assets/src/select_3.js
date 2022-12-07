@@ -3,7 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import axios from 'axios';
+import axios from './auth';
 import styles from './select_3.css';
 import Radium from 'radium';
 import ReactDOM from 'react-dom';
@@ -50,7 +50,7 @@ class SelectThree extends Component {
             })
         }
         if(this.props.value && this.props.value != this.state.selected) {
-            const selectedText = this.state.options 
+            const selectedText = this.state.options.length
                 ? this.state.options.filter(opt => opt[0] == parseInt(this.props.value))[0][1]
                 : ""
             this.setState({
@@ -88,7 +88,7 @@ class SelectThree extends Component {
 
     refreshOptions = (initial) => {
         axios({
-            'method': 'GET',
+            'method': 'POST',
             url: `/api/model-items/${this.props.app}/${this.props.model}/`,
             data: {
                 filters: this.state.filters
@@ -108,7 +108,6 @@ class SelectThree extends Component {
                             inputVal: ""
                         })  
                     } else {
-                        
                         const selectedText = resp.data.data.filter(opt => opt[0] == this.props.initial)[0][1]
                         this.setState({
                             selected: this.props.initial,

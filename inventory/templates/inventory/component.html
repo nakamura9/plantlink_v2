@@ -3,7 +3,25 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h4>Spares</h4>
+            <h5>Spares</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</td>
+                        <th>Qty Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in object.spares_data.all %}
+                    <tr>
+                        <td>{{s.stock_id}}</td>
+                        <td>{{s.name}}</td>
+                        <td>{{s.quantity}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

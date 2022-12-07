@@ -19,6 +19,8 @@
         <div class="col-sm-12 col-md-9">
             {% if app == "maintenance" %}
                 {% include "maintenance/home.html" %}
+            {% elif app == "planning" %}
+                {% include "planning/home.html" %}
             {% else %}
                 {% include "inventory/home.html" %}
             {% endif %}

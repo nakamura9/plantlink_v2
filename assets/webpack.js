@@ -6,6 +6,7 @@ module.exports = {
     mode: "development",
     context: __dirname,
     entry:  {
+        runtime: "regenerator-runtime/runtime.js",
         calendar: './src/calendar/index.js',
         ui: './src/widgets/index.js'
     },

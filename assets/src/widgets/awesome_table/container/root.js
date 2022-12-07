@@ -104,7 +104,7 @@ class OneTable extends Component {
             const id = url_parts[url_parts.length - 2]
             const [app, model] = this.props.model_id.split('.')
             const tableIndex = this.props.tabIndex || 0
-
+            console.log(id)
             axios.get(`/api/child-table/${app}/${model}/${id}?tabindex=${tableIndex}`)
                 .then(res => {
                     console.log(res)

@@ -35,6 +35,25 @@ def month(request, year=None, month=None):
     )
 
     events = []
+    for mech in machines:
+        span = 0
+        first_day = None
+        for day in days:
+            if mech.is_running_on_date(day):
+                span += 1
+                if span == 1:
+                    first_day = day
+            else:
+                if span > 0:
+                    events.append({
+                        'date': first_day,
+                        'title': f"RUN: {mech}",
+                        'description': "Machine Running",
+                        'span': span,
+                        'id': f"/update/inventory/machine/{mech.unique_id}",
+                        'next': None
+                    })
+                    span = 0 
     for day in days:
         for checklist in checklists:
             if checklist.is_open_on_date(day):
@@ -47,16 +66,7 @@ def month(request, year=None, month=None):
                     'next': None
                 })
 
-        for mech in machines:
-            if mech.is_running_on_date(day):
-                events.append({
-                    'date': day,
-                    'title': f"RUN: {mech}",
-                    'description': "Machine Running",
-                    'span': 1,
-                    'id': f"/update/inventory/machine/{mech.unique_id}",
-                    'next': None
-                })
+        
 
     for job in planned_jobs:
          events.append({

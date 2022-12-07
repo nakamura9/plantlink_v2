@@ -46,3 +46,59 @@ textarea {
     right: 8rem;
     bottom: 8rem;
 }
+
+footer a {
+    text-decoration: none;
+}
+
+footer li {
+    list-style-type: none;
+    padding: 0.5rem;
+    font-size: 1.25rem;
+}
+
+footer {
+    padding: 1rem
+}
+
+.table a,
+.list-group a {
+    font-weight: 700;
+    text-decoration: none;
+    color: black
+}
+
+.home-container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    max-width: 900px;
+    margin: 0px auto;
+    flex-wrap: wrap;
+
+}
+
+.home-card {
+    width:200px;
+    height:200px;
+    border-radius: 8px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:2rem
+}
+
+.home-card svg {
+    display: block;
+    margin: 0px auto;
+    opacity: 0.35;
+}
+
+.home-card a {
+    text-decoration: none;
+    color: black;
+}

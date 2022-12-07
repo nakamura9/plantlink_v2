@@ -10,7 +10,8 @@ from django.apps import apps
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-
+from rest_framework.authtoken.models import Token
+from django.middleware.csrf import get_token
 
 from base import forms
 from base.models import BaseModel
@@ -143,8 +144,6 @@ class BaseUpdateView(ModelMixin, UpdateView):
         try:
             return model.objects.get(pk=self.kwargs['id'])
         except Exception as e:
-            print(self.kwargs['id'])
-            print(e)
             raise Http404()
 
     def get_success_url(self):
@@ -243,3 +242,16 @@ def get_model_items(request, app_name=None, model_name=None):
         if or_queries:
             qs = qs.filter(or_queries)
     return JsonResponse({'data': [(i.pk, str(i)) for i in qs]})
+
+def get_token_for_current_user(request):
+    if not request.user.is_anonymous:
+        token, _ = Token.objects.get_or_create(user=request.user)
+        return JsonResponse({'token': token.key})
+
+    csrf_token = get_token(request)
+    
+    return JsonResponse({
+        'detail': "The request's user is not signed in",
+        'token': '',
+        'csrf': csrf_token
+        })
