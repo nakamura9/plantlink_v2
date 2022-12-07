@@ -19,6 +19,7 @@ from base.model_utils import child_table_fields
 import json
 import urllib
 from django.db.models import Q
+from django.db import models
 
 
 class LoginView(FormView):
@@ -133,7 +134,12 @@ class BaseCreateView(ModelMixin, CreateView):
         return model.get_form()
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        resp = super().form_valid(form)
+        model = self.get_model_class()
+
+        if hasattr(model, 'form_valid'):
+            model.form_valid(form, self.object)
+        return resp 
 
 
 class BaseUpdateView(ModelMixin, UpdateView):
@@ -175,20 +181,9 @@ class BaseUpdateView(ModelMixin, UpdateView):
     def form_valid(self, form):
         resp = super().form_valid(form)
         model = self.get_model_class()
-        child_table_fields = [f.split(':')[1] for f in model.field_order if isinstance(f, str) and ':' in f]
         obj = self.get_object()
-        for ctf in child_table_fields:
-            app_label, model_name = ctf.split(".")
-            child_model = apps.get_model(app_label=app_label, model_name=model_name)
-            if not form.cleaned_data.get(model_name):
-                continue
-            getattr(obj, f"{model_name}_set").all().delete()
-            data = json.loads(urllib.parse.unquote(form.cleaned_data.get(model_name)))
-            for row in data:
-                row.update({'parent': obj})
-                child_model.objects.create(**row)
-
-            obj.save()
+        if hasattr(model, 'form_valid'):
+            model.form_valid(form, obj)
             
         return resp
 
@@ -209,7 +204,12 @@ def get_child_table_content(request, app=None, model=None, parent_id=None):
         row = {}
         for fieldname in m.field_order:
             name = fieldname
-            row[name] = getattr(child, name)
+            value = getattr(child, name)
+            if isinstance(value, models.Model):
+                row[name + "_id"] = value.pk
+                row[name] = str(value)
+            else:
+                row[name] = value
         data.append(row)
     return JsonResponse({'data': data})
 

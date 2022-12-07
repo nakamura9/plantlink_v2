@@ -108,6 +108,7 @@ class SelectThree extends Component {
                             inputVal: ""
                         })  
                     } else {
+                        console.log(this.props.initial)
                         const selectedText = resp.data.data.filter(opt => opt[0] == this.props.initial)[0][1]
                         this.setState({
                             selected: this.props.initial,

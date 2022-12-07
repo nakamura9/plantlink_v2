@@ -102,7 +102,6 @@ def child_table_fields(model):
 
     for fieldname in model.field_order:
         field = field_map.get(fieldname)
-        print(field)
         fieldtype = ""
         if isinstance(field, models.DateField):
             fieldtype = 'date'
@@ -133,3 +132,21 @@ def child_table_fields(model):
         })
 
     return field_list
+
+
+def parse_form_data_for_child(model, data, field_data):
+    res = {}
+    print(data)
+    for f in field_data:
+        name = f['name']
+        if f['type'] == 'link':
+            fk_model = apps.get_model(*f['options'].split('.'))
+            fk_id = data[name + "_id"]
+            print(fk_id)
+            fk_instance = fk_model.objects.get(pk=fk_id)
+            res[name] = fk_instance
+        else:
+            res[name] = data[name] 
+
+    print(res)
+    return res

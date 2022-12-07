@@ -9,9 +9,8 @@ const SearchField = (props) => {
         props.onChange({
             target: {
                 name: props.name,
-                value: state.selected ,
-                valueID: state.inputVal
-
+                value: state.inputVal,
+                valueID: state.selected
             }
         })
     }

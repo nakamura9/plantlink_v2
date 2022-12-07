@@ -39,11 +39,9 @@ def parse_file(file, filename):
         else:
             id_string = str(num)
         name = row[1]
-        print(name, id_string)
         try: 
             if len(id_string) == 4:     
                 machine = Machine.objects.get(pk=id_string[:2])
-                print('section created')
                 Section.objects.create(
                     unique_id=id_string,
                     section_name=name,

@@ -56,8 +56,6 @@ class WorkOrder(BaseModel):
         'downtime',
         'completion_date',
         'section_break',
-        'spares_issued',
-        'spares_returned',
         'column_break',
         'comments'
     ]
@@ -70,7 +68,7 @@ class WorkOrder(BaseModel):
     description = models.TextField(unique=False)
     execution_date = models.DateField(default=datetime.date.today)
     estimated_labour_time = models.DurationField(choices = time_duration)
-    assigned_to = models.ForeignKey("base.Account", on_delete=models.SET_NULL, null=True)
+    assigned_to = models.ForeignKey("base.Account", on_delete=models.SET_NULL, null=True, blank=True)
     priority = models.CharField(max_length=4,
                                 choices=[("high", "High"), ("low", "Low")])
     status = models.CharField(max_length=16, choices=[
@@ -81,12 +79,12 @@ class WorkOrder(BaseModel):
                         ("declined", "Declined"),
     ], default="requested")
 
-    resolver_action= models.TextField(null=True)
-    actual_labour_time = models.DurationField(null=True, choices=time_duration)
-    downtime = models.DurationField(null=True, choices=time_duration)
+    resolver_action= models.TextField(null=True, blank=True)
+    actual_labour_time = models.DurationField(null=True, choices=time_duration, blank=True)
+    downtime = models.DurationField(null=True, choices=time_duration, blank=True)
     completion_date = models.DateField(null=True, blank=True)
-    spares_issued = models.ManyToManyField("inventory.Item", related_name="%(class)s_spares_issued")
-    spares_returned = models.ManyToManyField("inventory.Item",related_name="%(class)s_spares_returned")
+    spares_issued = models.ManyToManyField("inventory.Item", related_name="%(class)s_spares_issued", blank=True)
+    spares_returned = models.ManyToManyField("inventory.Item",related_name="%(class)s_spares_returned", blank=True)
     comments = models.TextField(blank=True, default="")
 
     @property
@@ -157,7 +155,6 @@ class PreventativeTask(BaseModel):
         'actual_downtime',
         'assignments_accepted',
         'feedback',        
-        'spares_used',
         'comments'
     ]
     
@@ -225,24 +222,24 @@ class PreventativeMaintenanceItem(models.Model):
     description = models.TextField()
 
 class SparesRequest(BaseModel):
-    list_fields = ['preventative_task','date', 'name']
+    list_fields = ['requested_for','date', 'name']
     filter_fields = {
         'date': ['exact'],
-        'preventative_task': ['exact'],
+        'requested_for': ['icontains'],
     }
     field_order = [
         'date',
         'name',
         'column_break',
-        'preventative_task',
+        'requested_for',
         'requested_by',
         'section_break',
         'child:maintenance.sparesrequestitem'
     ]
     date = models.DateField()
-    name = models.CharField(max_length= 32, null=True, blank=True)
-    requested_by = models.CharField(max_length= 32, null=True, blank=True)
-    preventative_task = models.ForeignKey("PreventativeTask", null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length= 128, null=True)
+    requested_by = models.CharField(max_length= 128, null=True)
+    requested_for = models.CharField(max_length= 128, null=True) # checklist, work order or preventative task
 
     def __str__(self):
         return "REQ-%06d" % self.pk

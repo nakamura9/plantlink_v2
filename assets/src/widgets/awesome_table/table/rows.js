@@ -148,7 +148,7 @@ class InputRow extends EditableBase {
                             {this.props.fields.filter(f => !f.hidden).map(field =>  (
                                 <td key={field.name}>{renderField(
                                                         field, 
-                                                        field.type == "search" 
+                                                        field.type == "link" 
                                                           ? this.state.inputData[field.name + "_id"]
                                                           : this.state.inputData[field.name], 
                                                         this.inputHandler,
@@ -175,7 +175,7 @@ class EditRow extends EditableBase {
         const inputData = {}
         props.fields.forEach(field => {
             inputData[field.name] = props.data[field.name]
-            if(field.type == "search") {
+            if(field.type == "link") {
                 inputData[field.name + "_id"] = props.data[field.name + "_id"]
             }else if (field.type == "dynamic_search") {
                 inputData[field.options.modelname] = props.data[field.options.modelname]
@@ -218,7 +218,7 @@ class EditRow extends EditableBase {
                 {this.props.fields.filter(f => !f.hidden).map(
                     field => (<td key={field.name}>{
                                     renderField(field, 
-                                                field.type == "search" 
+                                                field.type == "link" 
                                                     ? this.state.inputData[field.name + "_id"]
                                                     : this.state.inputData[field.name], 
                                                  this.inputHandler)
@@ -252,7 +252,9 @@ const DisplayRow = (props) => {
                             <i className="fa fa-times" aria-hidden="true"></i>
                         </button>}
             </td>
-            {props.fields.filter(f => !f.hidden).map(field => (<td key={field.name}>
+            {props.fields
+                .filter(f => !f.hidden)
+                .map(field => (<td key={field.name}>
                     {renderData(field, props.data[field.name], props.data)}
                     </td>))}
         </tr>

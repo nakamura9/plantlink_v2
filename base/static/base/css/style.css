@@ -102,3 +102,16 @@ footer {
     text-decoration: none;
     color: black;
 }
+
+table button {
+    background-color: #eee !important;
+    margin: .25rem !important;
+}
+
+input[type="submit"] {
+    margin-top: .5rem !important;
+}
+
+.card {
+    margin-top: 1rem !important;
+}

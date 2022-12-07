@@ -268,3 +268,5 @@ def parse_file(status_store, file_name):
             status_store["messages"].append("Finished processing")
             status_store["stop"] = time.time()
             break
+
+    

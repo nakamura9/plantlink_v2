@@ -5,10 +5,13 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from base.model_utils import build_layout
+from base.model_utils import build_layout, child_table_fields, parse_form_data_for_child
 from crispy_forms.layout import Layout, HTML, Submit
 from crispy_forms.helper import FormHelper
 from django_filters import FilterSet
+from django.apps import apps
+import json
+import urllib
 
 from django import forms
 
@@ -31,6 +34,41 @@ class BaseModel(models.Model):
     def dashboard_context(self):
         raise NotImplementedError()
 
+    def make_children(self, form):
+        if not self.child_table_fields:
+            return 
+        
+        for name in self.child_table_fields:
+            field_name = [f for f in self.field_order if name in f][0].split(":")[-1]
+            child_app, child_name = field_name.split('.')
+            child_model = apps.get_model(child_app, child_name)
+            parentfield = child_model.parent 
+            child_model.objects.filter(parent=self).delete()
+            data_field = name
+            if not form.cleaned_data.get(data_field):
+                return
+            
+            data = json.loads(urllib.parse.unquote(form.cleaned_data[data_field]))
+            field_data = child_table_fields(child_model)
+
+            for row in data:
+                child_instance = child_model(
+                    parent=self,
+                    **parse_form_data_for_child(self, row, field_data)
+                )
+                
+                child_instance.save()
+            
+
+    @property
+    def child_table_fields(self):
+        return [f.split('.')[1] for f in self.field_order if isinstance(f, str) and '.' in f]
+
+
+    @staticmethod
+    def form_valid(form, obj):
+        obj.make_children(form)
+
     @classmethod
     def get_filterset_class(cls):
         meta = type('Meta', 
@@ -46,6 +84,7 @@ class BaseModel(models.Model):
         
         fields = [f for f in cls.field_order if f not in ["column_break", "section_break"] and isinstance(f, str) and ":" not in f]
         child_table_fields = [f.split('.')[1] for f in cls.field_order if isinstance(f, str) and '.' in f]
+        
         meta = type('Meta', tuple(), {
             'model': cls,
             'fields':  fields + child_table_fields

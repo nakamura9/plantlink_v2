@@ -12,9 +12,11 @@ const renderData = (field, value, rowData) => {
         case 'int':
             renderedData = !([null, undefined].includes(value) || isNaN(value))  ? parseInt(value) : ""
             break;
-        case 'search':
+        case 'link':
+            console.log(rowData)
             const id = rowData[field.name + "_id"]
-            renderedData = <a href={`/update/${field.options.app}/${field.options.model}/${id}`} target="_blank">{value}</a>
+            const [app, model] = field.options.split('.')
+            renderedData = <a href={`/update/${app}/${model}/${id}`} target="_blank">{value}</a>
             break;
         case 'text':
         case 'char':
