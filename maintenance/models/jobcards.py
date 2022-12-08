@@ -217,29 +217,49 @@ class PreventativeTask(BaseModel):
         else:
             return False
 
+
 class PreventativeMaintenanceItem(models.Model):
     parent = models.ForeignKey('maintenance.preventativetask', on_delete=models.CASCADE)
     description = models.TextField()
 
+
 class SparesRequest(BaseModel):
-    list_fields = ['requested_for','date', 'name']
+    list_fields = ['requested_by','date', 'name']
     filter_fields = {
         'date': ['exact'],
-        'requested_for': ['icontains'],
+        'workorder': ['exact'],
+        'preventative_task': ['exact'],
     }
     field_order = [
         'date',
         'name',
+        'request_type',
+        'status',
         'column_break',
-        'requested_for',
+        'preventative_task',
+        'workorder',
         'requested_by',
         'section_break',
         'child:maintenance.sparesrequestitem'
     ]
+    read_only_fields = ['date', 'name', 'requested_for', 'requested_by']
+
     date = models.DateField()
     name = models.CharField(max_length= 128, null=True)
+    request_type = models.CharField(max_length= 128, null=True, choices=[
+        ('request', 'Request'),
+        ('request', 'Issue'),
+        ('request', 'Return'),
+    ])
+    status = models.CharField(max_length= 128, null=True, choices=[
+        ('draft', 'Draft'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ])
     requested_by = models.CharField(max_length= 128, null=True)
-    requested_for = models.CharField(max_length= 128, null=True) # checklist, work order or preventative task
+    preventative_task = models.ForeignKey('maintenance.preventativetask', on_delete=models.SET_NULL, null=True, blank=True)
+    workorder = models.ForeignKey('maintenance.workorder', on_delete=models.SET_NULL, null=True, blank=True)
+
 
     def __str__(self):
         return "REQ-%06d" % self.pk
@@ -247,6 +267,7 @@ class SparesRequest(BaseModel):
 
 class SparesRequestItem(models.Model):
     field_order = ['item', 'unit', 'quantity']
+    update_read_only = True
 
     parent = models.ForeignKey('maintenance.sparesrequest', on_delete=models.CASCADE)
     item = models.ForeignKey("inventory.Item", null=True, on_delete=models.SET_NULL)

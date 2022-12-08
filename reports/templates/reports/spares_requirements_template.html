@@ -23,21 +23,18 @@
         </thead>
         <tbody>
             {% for task in p_tasks %}
-            {% for s in task.sparesrequest_set.all %}
-            <tr>
-                {% if s.linked_spares %}
-                <td>{{s.linked_spares.stock_id}}</td>
-                <td>{{s.linked_spares}}</td>
-                {% else %}
-                <td>N/A</td>
-                <td>{{s.name}}</td>
-                {% endif %}
-                <td>{{s.quantity}}</td>
-                <td>{{s.unit}}</td>
-                <td>{{task}}</td>
-                <td>{{task.scheduled_for}}</td>
-            </tr>
-            {% endfor %}
+                {% for s in task.sparesrequest_set.all %}
+                   {% for i in s.sparesrequestitem_set.all %}
+                    <tr>
+                        <td>{{i.item.serial_number}}</td>
+                        <td>{{i.item}}</td>
+                        <td>{{i.quantity}}</td>
+                        <td>{{i.unit}}</td>
+                        <td>{{task}}</td>
+                        <td>{{task.scheduled_for}}</td>
+                    </tr>
+                   {% endfor %}
+                {% endfor %}
             {% endfor %}
         </tbody>
     </table>

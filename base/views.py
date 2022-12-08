@@ -194,7 +194,10 @@ class BaseDeleteView(DeleteView):
 
 def get_child_table_fields(request, app=None, model=None):
     m = apps.get_model(app_label=app,model_name=model)
-    return JsonResponse({'properties': child_table_fields(m)})
+    return JsonResponse({
+        'properties': child_table_fields(m),
+        'update_read_only': hasattr(m, 'update_read_only') and m.update_read_only
+    })
 
 def get_child_table_content(request, app=None, model=None, parent_id=None):
     m = apps.get_model(app_label=app,model_name=model)

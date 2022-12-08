@@ -12,16 +12,17 @@ children.forEach((el, idx) => {
     const app = el.dataset.app
     const model = el.dataset.model
     const root = ReactDOM.createRoot(el)
+    const isUpdate = location.href.split('/').includes('update')
     axios({
         method: "GET",
         url: `/api/child-table-properties/${app}/${model}/`
     }).then(res => {
-        console.log(res.data)
         root.render(
             <OneTable
               model_id={`${app}.${model}`}
               inputID={`id_${model}`}
               fields={res.data.properties}
+              readOnly={isUpdate && res.data.update_read_only}
               tabIndex={idx}
             />)
     })
@@ -31,7 +32,6 @@ children.forEach((el, idx) => {
 const tree = document.getElementById('tree')
 
 if(tree && tree.dataset.url) {
-    console.log(tree.dataset.url)
     axios({
         method:"GET",
         url: tree.dataset.url
@@ -69,6 +69,6 @@ search.forEach(field => {
         app={field.dataset.app}
         required={field.required}
         multiple={multiple}
-        disabled={field.disabled || field.dataset.readonly == "true"}
+        disabled={field.disabled || Array.from(field.classList).includes("read-only")}
         name={field.name}/>)
 })

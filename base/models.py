@@ -96,6 +96,8 @@ class BaseModel(models.Model):
                 for field in self.fields:
                     if not field in cls.read_only_fields: continue                    
                     field = self.fields.get(field)
+                    if isinstance(field.widget, forms.widgets.Select):
+                        field.widget.attrs['class'] = field.widget.attrs['class'] + ' read-only' 
                     field.widget.attrs['readonly'] = 'readonly' 
             
             self.helper = FormHelper()

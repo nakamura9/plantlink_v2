@@ -9,6 +9,7 @@ from django.db import models
 from django.db.models import Q
 
 from base.models import BaseModel
+from planning.models import RunPlanItem, Order
 
 class Asset(BaseModel):
     """
@@ -101,7 +102,7 @@ class Machine(BaseModel):
     manufacturer = models.CharField(max_length=128)
     asset_data = models.ForeignKey("Asset", null=True, blank=True, verbose_name="Asset",on_delete=models.SET_NULL)
     commissioning_date = models.DateField(blank = True, null=True)
-    run_data = models.ManyToManyField("planning.RunPlanItem", blank=True)
+    
 
     def dashboard_context(self):
         return {
@@ -111,6 +112,17 @@ class Machine(BaseModel):
     @property
     def children(self):
         return [child.children for child in self.section_set.all()]
+
+    @property
+    def run_data(self):
+        return RunPlanItem.objects.filter(machine=self)
+
+    @property
+    def orders(self):
+        return Order.objects.filter(
+            machine=self,
+            manufacture_date__gte=datetime.date.today()
+        )
 
     def availability_over_period(self, start, stop=datetime.date.today()):
         """used to calculate the machines availability over a given period"""
@@ -157,7 +169,7 @@ class Machine(BaseModel):
         """Returns the machine availability for that date"""
         breakdowns = self.workorder_set.filter(execution_date=date)
         if breakdowns.count() > 0:
-            downtime = sum(i.downtime.seconds for i in breakdowns) /3600.0
+            downtime = sum(i.downtime.seconds for i in breakdowns if i.downtime) /3600.0
         else: 
             downtime = 0.0
         run_data = self.run_on_date(date)

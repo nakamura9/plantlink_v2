@@ -48,7 +48,7 @@ def render(filters):
       execution_date__lte=to,
    )
    total_downtime = sum((t.downtime.seconds  \
-            for  t in breakdowns if t.actual_labour_time)) / 3600.0
+            for  t in breakdowns if t.downtime)) / 3600.0
 
    dates, offsets = calculate_spans(frm, to)
    x_labels = get_labels(dates, offsets)

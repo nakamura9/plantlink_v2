@@ -40,4 +40,5 @@ $(document).ready(() => {
         default:
             console.log("Scripts loaded")
     }
+
 })

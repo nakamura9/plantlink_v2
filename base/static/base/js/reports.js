@@ -21,7 +21,6 @@ $(document).ready(function(){
     })
 
     $("#pdf").on("click", function() {
-        console.log("clicked")
         const url_parts = location.href.split('/')
         const report_name = url_parts[url_parts.length - 2]
         window.location.href = '/report-pdf/' + report_name + '/?' + $('form').serialize()

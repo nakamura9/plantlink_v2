@@ -62,7 +62,8 @@
                 </tbody>
             </table>
             <hr>
-            <h5>Run History</h5>
+            <h5>Run</h5>
+            <h6>Plan</h6>
             <table class="table table-sm">
                 <thead>
                     <tr>
@@ -83,7 +84,29 @@
                     {% endfor %}
                 </tbody>
             </table>
-
+            <h6>Orders</h6>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Order No</th>
+                        <th>Item Code</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in object.orders %}
+                    <tr>
+                        <td>{{o.order_number}}</td>
+                        <td>{{o.description}}</td>
+                        <td>{{o.customer}}</td>
+                        <td>{{o.manufacture_date}}</td>
+                        <td>{{o.quantity}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

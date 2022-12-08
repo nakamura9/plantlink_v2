@@ -161,6 +161,7 @@ class Checklist(BaseModel):
 
 class ChecklistItem(models.Model):
     field_order = ['description']
+    update_read_only = True
 
     class Meta:
         verbose_name = "Checklist Item"

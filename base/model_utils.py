@@ -136,7 +136,6 @@ def child_table_fields(model):
 
 def parse_form_data_for_child(model, data, field_data):
     res = {}
-    print(data)
     for f in field_data:
         name = f['name']
         if f['type'] == 'link':

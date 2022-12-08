@@ -6,12 +6,16 @@ import datetime
 
 class RunPlanItem(BaseModel):
     class Meta:
-        verbose_name = "Run Schedule"
+        verbose_name = "Run Plan Item"
     list_fields = ['start_date', 'end_date', 'run_hours']
+    dashboard_template = "planning/run_plan.html"
+
     filter_fields = {
+        'machine': ['exact'],
         'start_date': ['exact']
     }
     field_order = [
+        'machine',
         'start_date',
         'end_date',
         'column_break',
@@ -31,6 +35,7 @@ class RunPlanItem(BaseModel):
     end_date = models.DateField()
     run_hours = models.FloatField()
     
+    machine = models.ForeignKey("inventory.Machine", null=True, on_delete=models.SET_NULL)
     monday = models.BooleanField(default=False)
     tuesday = models.BooleanField(default=False)
     wednesday = models.BooleanField(default=False)
@@ -38,12 +43,18 @@ class RunPlanItem(BaseModel):
     friday = models.BooleanField(default=False)
     saturday = models.BooleanField(default=False)
     sunday = models.BooleanField(default=False)
-
-    orders = models.ManyToManyField('planning.order')
     #override save method to specify run days
     #add specific days
     #write property that gets total run hours  for a given period
     
+    @property
+    def orders(self):
+        return Order.objects.filter(
+            machine=self.machine, 
+            manufacture_date__gte=self.start_date,
+            manufacture_date__lte=self.end_date,
+            )
+
     def __str__(self):
         return f'{self.start_date} to {self.end_date}'
 
@@ -100,11 +111,13 @@ class Order(BaseModel):
     """
     list_fields = ['customer', 'production_status', 'delivery_status']
     filter_fields = {
+        'machine': ['exact'],
         'customer': ['icontains'],
         'production_status': ['exact'],
         'delivery_status': ['exact']
     }
     field_order = [
+        'machine',
         'order_number',
         'description',
         'customer',
@@ -125,6 +138,7 @@ class Order(BaseModel):
         self.actual_delivery_epoch = None
         super(Order,self).__init__(*args,**kwargs)
 
+    machine = models.ForeignKey("inventory.Machine", null=True, on_delete=models.SET_NULL)
     order_number = models.CharField(max_length= 32, primary_key=True)
     description = models.CharField(max_length=64)
     quantity =models.IntegerField()
