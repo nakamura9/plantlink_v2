@@ -16,10 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from base.views import LoginView, logout
+from django.http import HttpResponseRedirect
+
+
+def index(request):
+    if request.user.is_anonymous:
+        return HttpResponseRedirect('/login/')
+
+    return HttpResponseRedirect('/home/')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', index),
     path('', include('base.urls')),
     path('', include('planning.urls')),
     path('', include('inventory.urls')),

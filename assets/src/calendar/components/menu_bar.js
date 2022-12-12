@@ -21,18 +21,27 @@ const menuBar = (props) => {
                 </div>
                 <div>
                     <div className="btn-group mr-3">            
+                        
+                        <button 
+                            className="btn text-white month-btn"
+                            style={{backgroundColor: props.primary}}
+                            onClick={props.toggleFilters}
+                            
+                        >
+                            <i className="fas fa-filter"></i>
+                        </button>
                         {props.showMonth ? 
                             <button className="btn text-white month-btn"
                             style={{backgroundColor: props.primary}}
-                            onClick={()=>{props.setView('month')}}><i className="fa fas-calendar"></i> Month</button>:null}
+                            onClick={()=>{props.setView('month')}}><i className="fas fa-calendar"></i> Month</button>:null}
                         {props.showWeek ?
                             <button className="btn text-white week-btn" 
                             style={{backgroundColor: props.primary}}
-                            onClick={()=>{props.setView('week')}}><i className="fa fas-calendar"></i> Week</button> : null}
+                            onClick={()=>{props.setView('week')}}> Week</button> : null}
                         {props.showDay ?
                             <button className="btn text-white day-btn" 
                             style={{backgroundColor: props.primary}}
-                            onClick={()=>{props.setView('day')}}><i className="fa fas-calendar"></i> Day</button>:null}
+                            onClick={()=>{props.setView('day')}}> Day</button>:null}
                     </div>
 
                     <button

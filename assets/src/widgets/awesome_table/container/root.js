@@ -6,7 +6,6 @@ import Body from '../table/body'
 import styles from '../table/table.css'
 import axios from 'axios'
 import PropTypes from 'prop-types'
-// import PopupForm from '../popup_form'
 import getHook from '../hooks';
 import _ from 'lodash'
 

@@ -77,6 +77,7 @@ function showWeekCalendar(date, month, year){
         for(day of week){
             if(day.day == date){
                 selected = week
+                return selected
             }
         }
     }

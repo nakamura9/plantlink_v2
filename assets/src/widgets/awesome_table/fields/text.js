@@ -13,9 +13,7 @@ const TextField = (props) => {
             }
         })
     }
-    console.log("context")
-    console.log(props.context)
-    console.log(props.context == "form")
+    
     if(props.context == "form") {
         return <textarea
                   rows={4}

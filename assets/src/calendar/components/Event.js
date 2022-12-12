@@ -33,7 +33,7 @@ const Event = (props) =>{
     const startX = props.offset ? props.offset: 0;
     const linkStyle = {
         zIndex: props.index,
-        left: "0px",
+        left: props.view === "day" ? "60px" : "0px",
         top: `${startY}px`,
         width: props.view === "day" 
                 ? "250px" : props.view === "week" ?

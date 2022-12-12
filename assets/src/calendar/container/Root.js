@@ -9,9 +9,10 @@ import DayView from '../components/Day/DayView';
 import MenuBar from '../components/menu_bar';
 import styles from './styles.css'
 import Context from './provider'
-import axios from 'axios';
+import axios from '../../auth';
 import Gantt from '../gantt/root'
 import PropTypes from 'prop-types';
+import Filters from '../components/filters';
 
 
 /**
@@ -52,7 +53,9 @@ export default class CalendarApp extends Component{
         appWidth: 0,
         appHeight: 0,
         menuHeight: 0,
-        monthText: ""
+        monthText: "",
+        showFilters: false,
+        filters: {}
     }
 
     propTypes = {
@@ -167,12 +170,13 @@ export default class CalendarApp extends Component{
 
     injectEvents = (month, year, comp) => {
         axios({
-            method: "GET",
+            method: "POST",
             url: `/planner/api/calendar/month/${year}/${month}/`,
             params: {
                 app: this.props.app || "planner",
                 model_name: this.props.model_name || "event"
-            }
+            },
+            data: {filters: this.state.filters}
         }).then(res => {
             comp.setState({events: res.data})
         })
@@ -180,8 +184,9 @@ export default class CalendarApp extends Component{
 
     injectWeekEvents = (day, month, year, comp) => {
         axios({
-            method: "GET",
-            url: `/planner/api/calendar/week/${year}/${month}/${day}/`
+            method: "POST",
+            url: `/planner/api/calendar/week/${year}/${month}/${day}/`,
+            data: {filters: this.state.filters}
         }).then(res => {
             comp.setState({events: res.data})
         })
@@ -189,11 +194,40 @@ export default class CalendarApp extends Component{
 
     injectDayEvents = (day, month, year, comp) => {
         axios({
-            method: "GET",
-            url: `/planner/api/calendar/day/${year}/${month}/${day}/`
+            method: "POST",
+            url: `/planner/api/calendar/day/${year}/${month}/${day}/`,
+            data: {filters: this.state.filters}
         }).then(res => {
             comp.setState({events: res.data})
         })
+    }
+
+    updateFilters = (evt) => {
+        const newFilters = {...this.state.filters}
+        newFilters[evt.target.name] = evt.target.value
+        this.setState({filters: newFilters})
+    }
+
+    refreshEvents = () => {
+        switch(this.state.view) {
+            case 'month':
+            case 'gantt':
+                this.injectEvents(this.state.month, this.state.year, this)
+                break;
+            case 'week':
+                this.injectWeekEvents(this.state.day, this.state.month, this.state.year, this)
+                break;
+            case 'day':
+                this.injectDayEvents(this.state.day, this.state.month, this.state.year, this)
+                break;
+            default:
+                alert("wrong view");
+        }
+    }
+
+    onFilter = () => {
+        this.refreshEvents()
+        this.setState({showFilters: !this.state.showFilters})
     }
 
     render(){
@@ -223,14 +257,15 @@ export default class CalendarApp extends Component{
                               params={{
                                 day: this.state.day,
                                 month: this.state.month, 
-                                year: this.state.year
+                                year: this.state.year,
+                                filters: this.state.filters
                               }}
                               showDay={this.props.showDay}
                               setDate={(params) =>{this.setState(params)}}
                               hook={this.injectWeekEvents}
                               getMonthText={this.getMonthText}
                               setTitle={this.setMonthText}
-                              />
+                            />
                 break;
             case 'day': 
                 rendered = <DayView 
@@ -239,7 +274,8 @@ export default class CalendarApp extends Component{
                               params={{
                                     day: this.state.day,
                                     month: this.state.month, 
-                                    year: this.state.year
+                                    year: this.state.year,
+                                    filters: this.state.filters
                               }}
                               hook={this.props.dayHook}
                               setTitle={this.setMonthText}
@@ -274,6 +310,7 @@ export default class CalendarApp extends Component{
                               showDay={this.props.showDay}
                               menuRef={this.menuRef}
                               showMonth={this.props.showMonth}
+                              toggleFilters={() => this.setState({showFilters: !this.state.showFilters})}
                               showWeek={this.props.showWeek}
                               setView={(view)=>{
                                 this.setState({view: view})
@@ -288,6 +325,24 @@ export default class CalendarApp extends Component{
                             />
                             {/*App */}
                             {rendered}
+                            <Filters 
+                                show={this.state.showFilters}
+                                values={this.state.filters}
+                                fields={[
+                                    {
+                                        label: 'Event Types',
+                                        type: 'select',
+                                        name: 'event_types',
+                                        options: [
+                                            ['production', 'Production'],
+                                            ['maintenance', 'Maintenance'],
+                                        ],
+                                        frozen: false
+                                    }
+                                ]}
+                                handler={this.updateFilters}
+                                onFilter={this.onFilter}
+                            />
                         </div>
                     </div>
                 </Context.Provider>

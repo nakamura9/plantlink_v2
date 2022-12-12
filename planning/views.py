@@ -8,6 +8,7 @@ from maintenance.models import Checklist, PreventativeTask
 from inventory.models import Machine
 import calendar
 import datetime
+import json
 
 class CalendarView(TemplateView):
     template_name = os.path.join("planning", "calendar.html")
@@ -21,67 +22,81 @@ def month(request, year=None, month=None):
     end = datetime.date(year, month, length)
     days = [datetime.date(year, month, i) for i in range(1, length + 1)]
 
-    
+    try:
+        args = json.loads(request.body)
+    except:
+        args = {}
+
+    filters = args.get('filters', {})
+
+
     checklists = Checklist.objects.filter(
         resolver__id=request.user.pk,
         on_hold=False
     )
     machines = Machine.objects.all()
     planned_jobs = PreventativeTask.objects.filter(
-        assignments__id__in=[request.user.pk],
+        # assignments__id__in=[request.user.pk],
         completed_date__isnull=True,
         scheduled_for__gte=start,
         scheduled_for__lte=end
     )
 
     events = []
-    for mech in machines:
-        span = 0
-        first_day = None
+    if filters.get('event_types') in ['production', None]:
+        for mech in machines:
+            span = 0
+            first_day = None
+            for day in days:
+                if mech.is_running_on_date(day):
+                    span += 1
+                    if span == 1:
+                        first_day = day
+                else:
+                    if span > 0:
+                        events.append({
+                            'date': first_day,
+                            'title': f"RUN: {mech}",
+                            'description': "Machine Running",
+                            'span': span,
+                            'id': f"/update/inventory/machine/{mech.unique_id}",
+                            'next': None
+                        })
+                        span = 0 
+    if filters.get('event_types') in ['maintenance', None]: 
         for day in days:
-            if mech.is_running_on_date(day):
-                span += 1
-                if span == 1:
-                    first_day = day
-            else:
-                if span > 0:
+            for checklist in checklists:
+                if checklist.is_open_on_date(day):
                     events.append({
-                        'date': first_day,
-                        'title': f"RUN: {mech}",
-                        'description': "Machine Running",
-                        'span': span,
-                        'id': f"/update/inventory/machine/{mech.unique_id}",
+                        'date': day,
+                        'title': checklist.title,
+                        'description': str(checklist.machine),
+                        'span': 1,
+                        'id': f"/update/maintenance/checklist/{checklist.pk}",
                         'next': None
                     })
-                    span = 0 
-    for day in days:
-        for checklist in checklists:
-            if checklist.is_open_on_date(day):
-                events.append({
-                    'date': day,
-                    'title': checklist.title,
-                    'description': str(checklist.machine),
-                    'span': 1,
-                    'id': f"/update/maintenance/checklist/{checklist.pk}",
-                    'next': None
-                })
 
-        
+        for job in planned_jobs:
+            events.append({
+                'date': job.scheduled_for,
+                'title': f"Planned Job: {job.machine}",
+                'description': job.description,
+                'span': 1,
+                'id': f"/update/maintenance/preventativetask/{job.pk}",
+                'next': None
+            })
 
-    for job in planned_jobs:
-         events.append({
-            'date': job.scheduled_for,
-            'title': f"Planned Job: {job.machine}",
-            'description': job.description,
-            'span': 1,
-            'id': f"/update/maintenance/preventativetask/{job.pk}",
-            'next': None
-        })
     return JsonResponse(events, safe=False)
 
 
 def week(request, year=None, month=None, day=None):
     ''' Javascript uses 0 indexed dates '''
+    try:
+        args = json.loads(request.body)
+    except:
+        args = {}
+
+    filters = args.get('filters', {})
 
     month = month + 1
     current_date = datetime.date(year, month, day)
@@ -89,7 +104,6 @@ def week(request, year=None, month=None, day=None):
     start = current_date + datetime.timedelta(days=(0 - curr_weekday))
     end = current_date + datetime.timedelta(days=(7 - curr_weekday))
     machines = Machine.objects.all()
-
     
     days = [datetime.date(year, month, i) for i in range(start.day, end.day)]
     
@@ -98,49 +112,57 @@ def week(request, year=None, month=None, day=None):
         on_hold=False
     )
     planned_jobs = PreventativeTask.objects.filter(
-        assignments__id__in=[request.user.pk],
+        # assignments__id__in=[request.user.pk],
         completed_date__isnull=True,
         scheduled_for__gte=start,
         scheduled_for__lte=end
     )
-
     events = []
     for day in days:
-        for checklist in checklists:
-            if checklist.is_open_on_date(day):
-                events.append({
-                    'date': day,
-                    'title': checklist.title,
-                    'description': str(checklist.machine),
-                    'span': 1,
-                    'id': f"/update/maintenance/checklist/{checklist.pk}",
-                    'next': None
-                })
-        for mech in machines:
-            if mech.is_running_on_date(day):
-                events.append({
-                    'date': day,
-                    'title': f"RUN: {mech}",
-                    'description': "Machine Running",
-                    'span': 1,
-                    'id': f"/update/inventory/machine/{mech.unique_id}",
-                    'next': None
-                })
+        if filters.get('event_types') in ['maintenance', None]:
+            for checklist in checklists:
+                if checklist.is_open_on_date(day):
+                    events.append({
+                        'date': day,
+                        'title': checklist.title,
+                        'description': str(checklist.machine),
+                        'span': 1,
+                        'id': f"/update/maintenance/checklist/{checklist.pk}",
+                        'next': None
+                    })
+        if filters.get('event_types') in ['production', None]:
+            for mech in machines:
+                if mech.is_running_on_date(day):
+                    events.append({
+                        'date': day,
+                        'title': f"RUN: {mech}",
+                        'description': "Machine Running",
+                        'span': 1,
+                        'id': f"/update/inventory/machine/{mech.unique_id}",
+                        'next': None
+                    })
 
-    for job in planned_jobs:
-         events.append({
-            'date': job.scheduled_for,
-            'title': str(job.machine),
-            'description': job.description,
-            'span': 1,
-            'id': f"/update/maintenance/preventativetask/{job.pk}",
-            'next': None
-        })
+    if filters.get('event_types') in ['maintenance', None]:
+        for job in planned_jobs:
+            events.append({
+                'date': job.scheduled_for,
+                'title': str(job.machine),
+                'description': job.description,
+                'span': 1,
+                'id': f"/update/maintenance/preventativetask/{job.pk}",
+                'next': None
+            })
     return JsonResponse(events, safe=False)
 
 
 def day(request, year=None, month=None, day=None):
     ''' Javascript uses 0 indexed dates '''
+    try:
+        args = json.loads(request.body)
+    except:
+        args = {}
+
+    filters = args.get('filters', {})
 
     month = month + 1
     current_date = datetime.date(year, month, day)
@@ -157,35 +179,36 @@ def day(request, year=None, month=None, day=None):
     )
 
     events = []
-    for checklist in checklists:
-        if checklist.is_open_on_date(current_date):
+    if filters.get('event_types') in ['maintenance', None]:
+        for checklist in checklists:
+            if checklist.is_open_on_date(current_date):
+                events.append({
+                    'date': current_date,
+                    'title': checklist.title,
+                    'description': str(checklist.machine),
+                    'span': 1,
+                    'id': f"/update/maintenance/checklist/{checklist.pk}",
+                    'next': None
+                })
+
+        for job in planned_jobs:
             events.append({
-                'date': current_date,
-                'title': checklist.title,
-                'description': str(checklist.machine),
+                'date': job.scheduled_for,
+                'title': str(job.machine),
+                'description': job.description,
                 'span': 1,
-                'id': f"/update/maintenance/checklist/{checklist.pk}",
+                'id': f"/update/maintenance/preventativetask/{job.pk}",
                 'next': None
             })
-
-    for job in planned_jobs:
-         events.append({
-            'date': job.scheduled_for,
-            'title': str(job.machine),
-            'description': job.description,
-            'span': 1,
-            'id': f"/update/maintenance/preventativetask/{job.pk}",
-            'next': None
-        })
-
-    for mech in machines:
-        if mech.is_running_on_date(current_date):
-            events.append({
-                'date': day,
-                'title': f"RUN: {mech}",
-                'description': "Machine Running",
-                'span': 1,
-                'id': f"/update/inventory/machine/{mech.unique_id}",
-                'next': None
-            })
+    if filters.get('event_types') in ['production', None]:
+        for mech in machines:
+            if mech.is_running_on_date(current_date):
+                events.append({
+                    'date': day,
+                    'title': f"RUN: {mech}",
+                    'description': "Machine Running",
+                    'span': 1,
+                    'id': f"/update/inventory/machine/{mech.unique_id}",
+                    'next': None
+                })
     return JsonResponse(events, safe=False)
