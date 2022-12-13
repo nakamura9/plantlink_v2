@@ -16,9 +16,14 @@ import urllib
 from django import forms
 
 
-roles = [("admin", "Admin"),
-        ("artisan", "Artisan"),
-        ("operator","Operator")]
+roles = [
+    ("admin", "Admin"),
+    ("artisan", "Artisan"),
+    ("production_planner","Production Planner"),
+    ("maintenance_planner","Maintenance Planner"),
+    ("inventory_controller","Inventory Controller"),
+    ("reports","Reports")
+]
 
 class BaseModel(models.Model):
     home_visible = True
@@ -30,6 +35,10 @@ class BaseModel(models.Model):
     field_order = []
     script = ""
     dashboard_template = ""
+
+    @property
+    def model_string(self):
+        return f"{self.__class__._meta.app_label.lower()}.{self.__class__.__name__.lower()}"
 
     def dashboard_context(self):
         raise NotImplementedError()

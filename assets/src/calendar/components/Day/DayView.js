@@ -69,7 +69,8 @@ class DayView extends Component{
                                     index={1 + i}
                                     offset={50 * (i % 3)}
                                     width={this.state.width}
-                                    key={i} 
+                                    key={i}
+                                    position={i}
                                     data={event}
                                     view={"day"}/>
                             ))}

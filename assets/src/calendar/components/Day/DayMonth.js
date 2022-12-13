@@ -63,6 +63,7 @@ const dayMonth = (props) => {
                             width={props.width}
                             key={i} 
                             data={event}
+                            position={i}
                             view={props.view}
                         />))
                     : <HoverableEventList 

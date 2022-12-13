@@ -69,6 +69,7 @@ const day = (props) => {
                             width={props.width}
                             key={i} 
                             data={event}
+                            position={i}
                             view={props.view}/>
                     ))}
                     </div>

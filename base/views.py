@@ -14,12 +14,26 @@ from rest_framework.authtoken.models import Token
 from django.middleware.csrf import get_token
 
 from base import forms
-from base.models import BaseModel
+from base.models import BaseModel, Account
 from base.model_utils import child_table_fields
 import json
 import urllib
 from django.db.models import Q
 from django.db import models
+from django.contrib.messages import info
+
+
+# all: sparesrequest, sparesorder, item, machine, component, checklist, preventativetask,
+#      subunit, subassembly, section, asset, plant, workorder, runplanitem, order
+# reports has access to no pages
+# admin has access to everything 
+
+ROLE_MATRIX = {
+    'artisan': ['sparesrequest', 'checklist', 'preventativetask', 'workorder'],
+    'production_planner': ['runplanitem', 'order'],
+    'maintenance_planner': ['sparesorder', 'item', 'component', 'preventativetask', 'checklist', 'workorder'],
+    'inventory_controller': ['item', 'sparesorder', 'sparesrequest', 'component', 'plant', 'asset', 'machine', 'section', 'subunit', 'subassembly']
+}
 
 
 class LoginView(FormView):
@@ -49,6 +63,24 @@ class ModelMixin(object):
         return self._model
 
 
+class RoleMixin(object):
+    def get(self, *args, **kwargs):
+        resp = super().get(*args, **kwargs)
+
+        if self.request.user.is_superuser:
+            return resp
+        acc = Account.objects.get(pk=self.request.user.pk)
+        if acc.role == "admin":
+            return resp 
+        
+        model = self.get_model_class()
+        model_name = model.__name__.lower()
+        if model_name in ROLE_MATRIX.get(acc.role, []):
+            return resp
+        
+        info(self.request, f"{self.request.user} does not have sufficient permissions to access this page")
+        return HttpResponseRedirect('/home/')
+
 class HomeView(TemplateView):
     template_name = os.path.join("base", "home.html")
 
@@ -75,9 +107,10 @@ class AppHome(TemplateView):
         return context
 
 
-class BaseListView(ModelMixin, ListView):
+class BaseListView(RoleMixin, ModelMixin, ListView):
     template_name = os.path.join("base", "list.html")
     paginate_by = 20
+
 
     def get_queryset(self):
         model = self.get_model_class()
@@ -112,7 +145,7 @@ class BaseListView(ModelMixin, ListView):
         return context
 
 
-class BaseCreateView(ModelMixin, CreateView):
+class BaseCreateView(RoleMixin, ModelMixin, CreateView):
     template_name = os.path.join("base", "create.html")
 
     def get_success_url(self):
@@ -142,7 +175,7 @@ class BaseCreateView(ModelMixin, CreateView):
         return resp 
 
 
-class BaseUpdateView(ModelMixin, UpdateView):
+class BaseUpdateView(RoleMixin, ModelMixin, UpdateView):
     template_name = os.path.join("base", "update.html")
 
     def get_object(self, **kwargs):
@@ -196,7 +229,8 @@ def get_child_table_fields(request, app=None, model=None):
     m = apps.get_model(app_label=app,model_name=model)
     return JsonResponse({
         'properties': child_table_fields(m),
-        'update_read_only': hasattr(m, 'update_read_only') and m.update_read_only
+        'update_read_only': hasattr(m, 'update_read_only') and m.update_read_only,
+        'update_add_only': hasattr(m, 'update_add_only') and m.update_add_only
     })
 
 def get_child_table_content(request, app=None, model=None, parent_id=None):

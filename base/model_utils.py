@@ -2,13 +2,13 @@ from django.db import models
 from crispy_forms.layout import (Layout, Row, Column, HTML)
 from django.apps import apps 
 import copy 
+
 '''
 Sample layout 
 field
 field 
 column_break
 '''
-
 
 
 def build_layout(field_order):

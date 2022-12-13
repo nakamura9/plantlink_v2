@@ -8,6 +8,10 @@ from django.contrib.auth import authenticate
 from django.views.generic import TemplateView
 from maintenance.models import WorkOrder, PreventativeTask, Checklist
 from django.http import HttpResponse
+from base.models import Account
+from django.apps import apps 
+
+
 
 class Inbox(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -27,12 +31,17 @@ def update_status(request, id=None):
         info(request, "Wrong authentication")
         return HttpResponse("Goodbye world")
     status = request.GET['status']
-    if status in ['approved', 'declined'] and request.user.role != "admin":
-        info(request, "Only admins can approve or reject jobs.")
-        return HttpResponse("Goodbye world")
+    if not request.user.is_superuser:
+        acc = Account.objects.get(pk= request.user.pk)
+        if status in ['approved', 'declined'] and acc.role != "admin":
+            info(request, "Only admins can approve or reject jobs.")
+            return HttpResponse("Goodbye world")
 
-    job = WorkOrder.objects.get(pk=id)
-    job.status = status
-    job.save()
+    app_label, model_name = request.GET['model'].split(".")
+    model = apps.get_model(app_label=app_label, model_name=model_name)
+
+    instance = model.objects.get(pk=id)
+    instance.status = status
+    instance.save()
     info(request, "Successfully updated status")
-    return HttpResponse("Goodbye world")
+    return HttpResponse("Success")

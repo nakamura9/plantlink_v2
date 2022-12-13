@@ -23,6 +23,7 @@ children.forEach((el, idx) => {
               inputID={`id_${model}`}
               fields={res.data.properties}
               readOnly={isUpdate && res.data.update_read_only}
+              addOnly={isUpdate && res.data.update_add_only}
               tabIndex={idx}
             />)
     })

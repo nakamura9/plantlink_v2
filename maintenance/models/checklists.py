@@ -172,6 +172,7 @@ class ChecklistItem(models.Model):
 
 class ChecklistComment(models.Model):
     field_order = ['content']
+    update_add_only = True
 
     class Meta:
         verbose_name = "Comment"

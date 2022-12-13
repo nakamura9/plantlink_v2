@@ -31,6 +31,7 @@ class WeekView extends Component{
         if(! _.isEqual(prevProps.params, this.props.params)){
             this.updateCalendar()
         }
+        
     }
 
     updateCalendar(){

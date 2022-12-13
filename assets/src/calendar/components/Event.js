@@ -13,7 +13,7 @@ const Event = (props) =>{
     let height = 44;
     
     if(props.view === "month"){
-        startY = 0;
+        startY = 0 + (props.position * 35);
         height = 32;
     }else{
         if(props.data.start){
@@ -25,7 +25,8 @@ const Event = (props) =>{
             if(end > start){
                 height = (end - start) * 25;
             }
-            
+        } else {
+            startY = 90 + (props.position * 50);
         }
     }
     

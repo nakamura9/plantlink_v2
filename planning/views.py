@@ -69,7 +69,7 @@ def month(request, year=None, month=None):
                 if checklist.is_open_on_date(day):
                     events.append({
                         'date': day,
-                        'title': checklist.title,
+                        'title': f"C: {checklist.title}",
                         'description': str(checklist.machine),
                         'span': 1,
                         'id': f"/update/maintenance/checklist/{checklist.pk}",
@@ -79,7 +79,7 @@ def month(request, year=None, month=None):
         for job in planned_jobs:
             events.append({
                 'date': job.scheduled_for,
-                'title': f"Planned Job: {job.machine}",
+                'title': f"PT: {job.machine}",
                 'description': job.description,
                 'span': 1,
                 'id': f"/update/maintenance/preventativetask/{job.pk}",
@@ -124,7 +124,7 @@ def week(request, year=None, month=None, day=None):
                 if checklist.is_open_on_date(day):
                     events.append({
                         'date': day,
-                        'title': checklist.title,
+                        'title': f"C: {checklist.title}",
                         'description': str(checklist.machine),
                         'span': 1,
                         'id': f"/update/maintenance/checklist/{checklist.pk}",
@@ -146,7 +146,7 @@ def week(request, year=None, month=None, day=None):
         for job in planned_jobs:
             events.append({
                 'date': job.scheduled_for,
-                'title': str(job.machine),
+                'title': f"PT: {str(job.machine)}",
                 'description': job.description,
                 'span': 1,
                 'id': f"/update/maintenance/preventativetask/{job.pk}",
@@ -184,7 +184,7 @@ def day(request, year=None, month=None, day=None):
             if checklist.is_open_on_date(current_date):
                 events.append({
                     'date': current_date,
-                    'title': checklist.title,
+                    'title': f"C: {checklist.title}",
                     'description': str(checklist.machine),
                     'span': 1,
                     'id': f"/update/maintenance/checklist/{checklist.pk}",
@@ -194,7 +194,7 @@ def day(request, year=None, month=None, day=None):
         for job in planned_jobs:
             events.append({
                 'date': job.scheduled_for,
-                'title': str(job.machine),
+                'title': f"PT: {str(job.machine)}",
                 'description': job.description,
                 'span': 1,
                 'id': f"/update/maintenance/preventativetask/{job.pk}",
