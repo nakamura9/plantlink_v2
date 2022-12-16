@@ -14,6 +14,7 @@ from planning.models import RunPlanItem, Order
 class SparesOrder(BaseModel):
     read_only_fields = ['status']
     dashboard_template = "inventory/approve_order.html"
+    can_submit = True
     
     field_order = [
         'date',
@@ -36,6 +37,11 @@ class SparesOrder(BaseModel):
     def update_quantities(self):
         for row in self.sparesorderitem_set.all():
             row.item.quantity += row.quantity
+            row.item.save()
+
+    def on_void(self):
+        for row in self.sparesorderitem_set.all():
+            row.item.quantity -= row.quantity
             row.item.save()
 
     def save(self, *args, **kwargs):

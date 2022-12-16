@@ -199,6 +199,7 @@ class BaseUpdateView(RoleMixin, ModelMixin, UpdateView):
         context['model'] = self.get_model_class()._meta.verbose_name.title()
         context['create'] = f"/create/{self.kwargs['app']}/{self.kwargs['model']}/"
         context['list'] = f"/list/{self.kwargs['app']}/{self.kwargs['model']}/"
+        context['delete'] = f"/delete/{self.kwargs['app']}/{self.kwargs['model']}/{self.kwargs['id']}/"
         context['dashboard'] = self.get_model_class().dashboard_template
         try:
             additional_context = self.get_object().dashboard_context()
@@ -221,8 +222,26 @@ class BaseUpdateView(RoleMixin, ModelMixin, UpdateView):
         return resp
 
 
-class BaseDeleteView(DeleteView):
+class BaseDeleteView(ModelMixin, DeleteView):
     template_name = os.path.join("base", "delete.html")
+    def get_queryset(self):
+        klass = self.get_model_class()
+        return klass.objects.all()
+
+
+    def post(self, *args, **kwargs):
+        if not self.request.user.is_superuser:
+            info(self.request, "Only admins can delete/void documents")
+            return HttpResponseRedirect(self.request.url)
+
+        instance = self.get_model_class().objects.get(pk=self.kwargs['pk'])
+        instance.delete()
+        info(self.request, f"{instance} deleted successfully")
+        return super().post(*args, **kwargs)
+        
+
+    def get_success_url(self, *args, **kwargs):
+        return f"/list/{self.kwargs['app']}/{self.kwargs['model']}/"
 
 
 def get_child_table_fields(request, app=None, model=None):

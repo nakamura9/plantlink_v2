@@ -17,15 +17,7 @@
     </div>
   </nav>
   <article>
-        {% for msg in messages %}
-          <div class="alert alert-primary alert-dismissible fade show" role="alert">
-            <button class="btn btn-sm" type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-              <span class="sr-only">Close</span>
-            </button>
-            {{msg}}
-          </div>
-        {% endfor %}
+        
 
         <script>
           $(".close").click(() => {console.log("clicked"); $(".alert").remove()})
@@ -38,8 +30,25 @@
     <ul>
         <li><a href="{% url 'logout' %}" style="color:white;"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
         <li><a href="/admin" style="color:white;"> <i class="fas fa-user-astronaut    "></i> Admin</a></li>
+        <li><i class="fas fa-clock    "></i> Page age: <span id="age"></span></li>
     </ul>
   </footer>
+  <script>
+    const start = new Date()
+    function updateAge() {
+      const delta = new Date() - start
+      const deltaSeconds = parseInt(delta / 1000)
+      const el = document.getElementById("age")
+      el.innerHTML = deltaSeconds
+      setTimeout(updateAge, 1000)
+    }
+
+    $(document).ready(function() {
+        updateAge()
+    })
+
+  </script>
+
 {% endblock %}
 {% block _title %}
     {% block title %}{% endblock %}

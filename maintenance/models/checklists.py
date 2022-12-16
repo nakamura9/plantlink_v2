@@ -25,7 +25,8 @@ class Checklist(BaseModel):
     will_be_open_over_period(start, stop) 2 date objects return bool
     is_open_on_date(date) date object returns bool
     """
-
+    can_submit = True
+    dashboard_template = "maintenance/checklist.html"
     list_fields = ['machine', 'section', 'resolver']
     read_only_fields = [
         'title', 'creation_date', 'last_completed_date',
@@ -180,3 +181,11 @@ class ChecklistComment(models.Model):
     parent = models.ForeignKey('maintenance.checklist', on_delete=models.CASCADE)
     content = models.TextField()
     # author = models.ForeignKey('auth.user', on_delete=models.CASCADE)
+
+
+class ChecklistHistory(models.Model):
+    checklist = models.ForeignKey('maintenance.checklist', null=True, on_delete=models.SET_NULL)
+    date = models.DateField()
+    resolver = models.ForeignKey('base.account', on_delete=models.CASCADE)
+    no_items_completed = models.IntegerField()
+    items_omitted = models.CharField(max_length=1024) # comma delimited list of checklistitem pk's 

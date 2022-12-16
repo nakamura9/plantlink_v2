@@ -28,7 +28,7 @@ class PreventativeTask(BaseModel):
 
     Properties: is_open-> Boolean
     """
-
+    can_submit = True
     dashboard_template = "maintenance/approval.html"
     list_fields = ['machine', 'section', 'estimated_downtime']
     read_only_fields = [

@@ -58,7 +58,8 @@ footer li {
 }
 
 footer {
-    padding: 1rem
+    padding: 1rem;
+    color:  white;
 }
 
 .table a,
@@ -119,4 +120,51 @@ input[type="submit"] {
 select.read-only,
 input[readonly="readonly"] {
     pointer-events: none;
+}
+
+.list-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: black;
+    margin: 8px auto
+}
+
+.status-saved {
+    background-color: #000033;
+}
+
+.status-submitted {
+    background-color: #007bff;
+}
+
+.status-draft {
+    background-color: #aaa;
+}
+
+.status-void {
+    background-color: crimson;
+}
+
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.status-label {
+    height: 100%;
+    margin-right: 2rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: flex;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    margin: 10px 16px
 }

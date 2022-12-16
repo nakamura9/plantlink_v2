@@ -9,6 +9,7 @@ class RunPlanItem(BaseModel):
         verbose_name = "Run Plan Item"
     list_fields = ['start_date', 'end_date', 'run_hours']
     dashboard_template = "planning/run_plan.html"
+    can_submit = True
 
     filter_fields = {
         'machine': ['exact'],
@@ -110,6 +111,7 @@ class Order(BaseModel):
     
     """
     list_fields = ['customer', 'production_status', 'delivery_status']
+    can_submit = True
     filter_fields = {
         'machine': ['exact'],
         'customer': ['icontains'],

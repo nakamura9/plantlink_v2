@@ -17,6 +17,15 @@
         <script src="{% static 'base/fontawesome/js/all.min.js' %}"></script>
     </head>
     <body >
+        {% for msg in messages %}
+          <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <button class="btn btn-sm" type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            {{msg}}
+          </div>
+        {% endfor %}
         {%block _content %}
         {% endblock %}
         

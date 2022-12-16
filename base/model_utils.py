@@ -141,11 +141,9 @@ def parse_form_data_for_child(model, data, field_data):
         if f['type'] == 'link':
             fk_model = apps.get_model(*f['options'].split('.'))
             fk_id = data[name + "_id"]
-            print(fk_id)
             fk_instance = fk_model.objects.get(pk=fk_id)
             res[name] = fk_instance
         else:
             res[name] = data[name] 
 
-    print(res)
     return res

@@ -10,6 +10,7 @@ from base.utilities import time_choices
 class SparesRequest(BaseModel):
     dashboard_template = "maintenance/spares_request_approval.html"
     list_fields = ['requested_by','date', 'request_type', 'status']
+    can_submit = True
     filter_fields = {
         'date': ['exact'],
         'workorder': ['exact'],
@@ -55,6 +56,18 @@ class SparesRequest(BaseModel):
             return
 
         const = -1 if self.request_type == "issue" else 1
+        for row in self.sparesrequestitem_set.all():
+            row.item.quantity += (row.quantity * const)
+            row.item.save()
+
+    def on_void(self):
+        if self.status != "approved":
+            return
+
+        if self.request_type == "request":
+            return
+
+        const = 1 if self.request_type == "issue" else -1
         for row in self.sparesrequestitem_set.all():
             row.item.quantity += (row.quantity * const)
             row.item.save()

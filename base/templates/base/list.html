@@ -38,6 +38,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 {% for name in model.list_fields %}
                                     <th>{{name | title}}</th>
@@ -47,6 +48,7 @@
                         <tbody>
                             {% for item in object_list %}
                             <tr>
+                                <td><div class="list-status status-{{item.status_class}}"></div></td>
                                 <td><a href="{{item|get_detail}}">{{item}}</a></td>
                                 {% for name in model.list_fields %}
                                     <td>{{item | getattribute:name}}</td>

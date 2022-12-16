@@ -26,15 +26,53 @@ roles = [
 ]
 
 class BaseModel(models.Model):
-    home_visible = True
-    class Meta:
-        abstract =True
     filter_fields = {}
     list_fields = []
     form_props = {}
     field_order = []
     script = ""
     dashboard_template = ""
+    home_visible = True
+    can_void = True
+    can_submit = False
+
+    class Meta:
+        abstract =True
+    
+    draft = models.BooleanField(default=True)
+    void = models.BooleanField(default=False)
+
+    @property 
+    def status_class(self):
+        if self.draft:
+            if not self.can_submit:
+                return 'saved'
+            return 'draft'
+        if not self.draft:
+            if self.void:
+                return 'void'
+
+            return 'submitted'
+
+    def save(self, *args, **kwargs):
+        '''If no pk first save, saving again submits'''
+        if self.pk and self.can_submit:
+            self.draft = False
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.can_void:
+            self.void = True
+            self.save()
+            self.on_void()
+        else:
+            self.hard_delete()
+
+    def hard_delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+
+    def on_void(self):
+        pass
 
     @property
     def model_string(self):

@@ -24,6 +24,7 @@ class WorkOrder(BaseModel):
     """
 
     list_fields = ['machine', 'assigned_to', 'status']
+    can_submit = True
     dashboard_template = "maintenance/approval.html"
     read_only_fields = [
         'assigned_to', 'machine', 'section', 

@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SESSION_COOKIE_AGE = (60 * 5)
+SESSION_SAVE_EVERY_REQUEST = True
+
 
 # Application definition
 
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'base.middleware.login_required.LoginRequiredMiddleware'
 ]
 
 ROOT_URLCONF = 'plantlink.urls'
