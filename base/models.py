@@ -62,6 +62,9 @@ class BaseModel(models.Model):
 
     def delete(self, *args, **kwargs):
         if self.can_void:
+            if self.draft == True:
+                self.hard_delete()
+                return
             self.void = True
             self.save()
             self.on_void()
@@ -89,11 +92,10 @@ class BaseModel(models.Model):
             field_name = [f for f in self.field_order if name in f][0].split(":")[-1]
             child_app, child_name = field_name.split('.')
             child_model = apps.get_model(child_app, child_name)
-            parentfield = child_model.parent 
             child_model.objects.filter(parent=self).delete()
             data_field = name
             if not form.cleaned_data.get(data_field):
-                return
+                continue
             
             data = json.loads(urllib.parse.unquote(form.cleaned_data[data_field]))
             field_data = child_table_fields(child_model)

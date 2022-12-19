@@ -47,6 +47,14 @@
         updateAge()
     })
 
+    const els = document.querySelectorAll('.alert button') 
+    els.forEach(el => {
+      el.onclick = function(evt) {
+        const alerts = document.querySelectorAll('.alert')
+        alerts.forEach(al => al.remove())
+      }
+    })
+
   </script>
 
 {% endblock %}

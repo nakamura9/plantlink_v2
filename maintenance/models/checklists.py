@@ -170,6 +170,8 @@ class ChecklistItem(models.Model):
     parent = models.ForeignKey('maintenance.checklist', on_delete=models.CASCADE)
     description = models.TextField()
 
+    def __str__(self):
+        return self.description
 
 class ChecklistComment(models.Model):
     field_order = ['content']
@@ -188,4 +190,12 @@ class ChecklistHistory(models.Model):
     date = models.DateField()
     resolver = models.ForeignKey('base.account', on_delete=models.CASCADE)
     no_items_completed = models.IntegerField()
-    items_omitted = models.CharField(max_length=1024) # comma delimited list of checklistitem pk's 
+    items_omitted = models.CharField(max_length=1024, blank=True, default="") # comma delimited list of checklistitem pk's 
+
+    @property
+    def omitted_items_descriptions(self):
+        if len(self.items_omitted) == 0:
+            return []
+        return ChecklistItem.objects.filter(
+            pk__in=[int(i) for i in self.items_omitted.split(",")]
+        )

@@ -228,14 +228,13 @@ class BaseDeleteView(ModelMixin, DeleteView):
         klass = self.get_model_class()
         return klass.objects.all()
 
-
     def post(self, *args, **kwargs):
         if not self.request.user.is_superuser:
             info(self.request, "Only admins can delete/void documents")
-            return HttpResponseRedirect(self.request.url)
+            print(dir(self.request))
+            return HttpResponseRedirect(self.request.path)
 
         instance = self.get_model_class().objects.get(pk=self.kwargs['pk'])
-        instance.delete()
         info(self.request, f"{instance} deleted successfully")
         return super().post(*args, **kwargs)
         

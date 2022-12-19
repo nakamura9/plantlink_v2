@@ -1,15 +1,19 @@
 
 import os
+import datetime
 
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages import info
 from django.contrib.auth import authenticate
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from maintenance.models import WorkOrder, PreventativeTask, Checklist
+from maintenance.models.checklists import ChecklistHistory, ChecklistItem
 from django.http import HttpResponse
 from base.models import Account
 from django.apps import apps 
+from maintenance.forms import ChecklistForm
+from base.models import Account
 
 
 
@@ -45,3 +49,28 @@ def update_status(request, id=None):
     instance.save()
     info(request, "Successfully updated status")
     return HttpResponse("Success")
+
+
+class CheckListSubmitForm(FormView):
+    form_class = ChecklistForm
+    success_url = "/"
+    template_name = os.path.join("maintenance", "checklist.html")
+
+    def form_valid(self, form):
+        checklist = Checklist.objects.get(pk=self.kwargs['id'])
+        total_items = ChecklistItem.objects.filter(parent__id = self.kwargs['id'])
+        all_items_set = set([i.pk for i in total_items])
+        checked_items_set = set([int(i) for i in form.cleaned_data['checklist']])
+        omitted_items = list(all_items_set.difference(checked_items_set))
+        user = Account.objects.get(username=form.cleaned_data['username'])
+
+        ChecklistHistory.objects.create(
+            checklist=checklist,
+            date=datetime.date.today(),
+            resolver= user,
+            no_items_completed = len(form.cleaned_data['checklist']),
+            items_omitted = ",".join([str(i) for i in omitted_items])
+        )
+        info(self.request, f"Successfully completed checklist {checklist}")
+        resp = super().form_valid(form)
+        return resp

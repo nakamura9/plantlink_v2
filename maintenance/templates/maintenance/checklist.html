@@ -1,25 +1,29 @@
 
 <h5>Complete Checklist</h5>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Done</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in object.checklistitem_set.all %}
+<form method="POST" action="/complete-checklist/{{object.pk}}/" >
+    {{form.errors}}
+    {% csrf_token %}
+    <table class="table">
+        <thead>
             <tr>
-                <td>{{item.description}}</td>
-                <td><input type="checkbox" /></td>
+                <th>Item</th>
+                <th>Done</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for item in object.checklistitem_set.all %}
+                <tr>
+                    <td>{{item.description}}</td>
+                    <td><input type="checkbox" value="{{item.id}}" name="checklist"/></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<p><label for="">User:</label><br><input id="username" type="text" class="form-control" /></p>
-<p><label for="">Password:</label><br><input id="password" type="password" class="form-control" /></p>
-<button id="update-status" class="btn btn-primary">Submit</button>
+    <p><label for="">User:</label><br><input id="username" name = "username" type="text" class="form-control" /></p>
+    <p><label for="">Password:</label><br><input id="password" type="password" name="password" class="form-control" /></p>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 <br />
 <br />
 <br />
@@ -34,4 +38,18 @@
             <td>Items missed</td>
         </tr>
     </thead>
+    <tbody>
+        {% for i in object.checklisthistory_set.all %}
+            <tr>
+                <td>{{i.date}}</td>
+                <td>{{i.resolver}}</td>
+                <td>{{i.no_items_completed}}</td>
+                <td>
+                    {% for omitted in i.omitted_items_descriptions %}
+                        {{omitted}} <br />
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
